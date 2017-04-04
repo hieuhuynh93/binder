@@ -54,11 +54,11 @@ class Activator {
 			version     VARCHAR(20)  DEFAULT '',
 			name        VARCHAR(200) DEFAULT '',
 			description VARCHAR(255) DEFAULT '',
-			folder      VARCHAR(20)  DEFAULT '',
-			file        VARCHAR(20)  DEFAULT '',
+			folder      VARCHAR(200) DEFAULT '',
+			file        VARCHAR(200) DEFAULT '',
 			size        VARCHAR(20)  DEFAULT '',
-			thumb       VARCHAR(20)  DEFAULT '',
-			mime_type   VARCHAR(20)  DEFAULT '',
+			thumb       VARCHAR(200) DEFAULT '',
+			mime_type   VARCHAR(200) DEFAULT '',
 			PRIMARY KEY (binder_id)
 		) $charset_collate;";
 

@@ -75,7 +75,7 @@ class Post_Binder {
 			'description'         => __( 'Custom Post Type for Binder Documents', 'binder' ),
 			'labels'              => $labels,
 			'supports'            => array(
-				// 'title',
+				'title',
 				// 'editor',
 				// 'author',
 				'thumbnail',

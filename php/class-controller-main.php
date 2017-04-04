@@ -24,6 +24,15 @@ class Controller_Main {
 	private $activator;
 
 	/**
+	 * Define the settings page.
+	 *
+	 * @var 	object
+	 * @access	private
+	 * @since	0.1.0
+	 */
+	private $settings;
+
+	/**
 	 * Enqueue the public and admin assets.
 	 *
 	 * @var 	object
@@ -33,13 +42,13 @@ class Controller_Main {
 	private $controller_assets;
 
 	/**
-	 * Define the settings page.
+	 * The Binder Document Meta.
 	 *
 	 * @var 	object
 	 * @access	private
 	 * @since	0.1.0
 	 */
-	private $settings;
+	private $meta_binder;
 
 	/**
 	 * Notices on the admin screens.
@@ -65,6 +74,7 @@ class Controller_Main {
 	 * @param Activator         $activator         Activator.
 	 * @param Settings          $settings          Define the settings page.
 	 * @param Controller_Assets $controller_assets Enqueue the public and admin assets.
+	 * @param Meta_Binder       $meta_binder       The Binder Document Meta.
 	 * @param Notices_Admin     $notices_admin     Notices on the admin screens.
 	 * @param Post_Binder       $post_binder       The Binder Document Post Type.
 	 *
@@ -74,12 +84,14 @@ class Controller_Main {
 		Activator $activator,
 		Settings $settings,
 		Controller_Assets $controller_assets,
+		Meta_Binder $meta_binder,
 		Notices_Admin $notices_admin,
 		Post_Binder $post_binder
 	) {
 		$this->activator          = $activator;
 		$this->settings           = $settings;
 		$this->controller_assets  = $controller_assets;
+		$this->meta_binder        = $meta_binder;
 		$this->notices_admin      = $notices_admin;
 		$this->post_binder        = $post_binder;
 	}
@@ -99,6 +111,7 @@ class Controller_Main {
 		$this->activator->run();
 		$this->settings->run();
 		$this->controller_assets->run();
+		$this->meta_binder->run();
 		$this->notices_admin->run();
 		$this->post_binder->run();
 	}
