@@ -24,15 +24,6 @@ class Controller_Main {
 	private $activator;
 
 	/**
-	 * Uninstaller.
-	 *
-	 * @var 	object
-	 * @access	private
-	 * @since	0.1.0
-	 */
-	private $uninstaller;
-
-	/**
 	 * Enqueue the public and admin assets.
 	 *
 	 * @var 	object
@@ -72,7 +63,6 @@ class Controller_Main {
 	 * Constructor.
 	 *
 	 * @param Activator         $activator         Activator.
-	 * @param Uninstaller       $uninstaller       Uninstaller.
 	 * @param Settings          $settings          Define the settings page.
 	 * @param Controller_Assets $controller_assets Enqueue the public and admin assets.
 	 * @param Notices_Admin     $notices_admin     Notices on the admin screens.
@@ -82,14 +72,12 @@ class Controller_Main {
 	 */
 	public function __construct(
 		Activator $activator,
-		Uninstaller $uninstaller,
 		Settings $settings,
 		Controller_Assets $controller_assets,
 		Notices_Admin $notices_admin,
 		Post_Binder $post_binder
 	) {
 		$this->activator          = $activator;
-		$this->uninstaller        = $uninstaller;
 		$this->settings           = $settings;
 		$this->controller_assets  = $controller_assets;
 		$this->notices_admin      = $notices_admin;
@@ -109,7 +97,6 @@ class Controller_Main {
 		);
 
 		$this->activator->run();
-		$this->uninstaller->run();
 		$this->settings->run();
 		$this->controller_assets->run();
 		$this->notices_admin->run();
