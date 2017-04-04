@@ -67,6 +67,16 @@ class Activator {
 
 		// Add the version to the options table.
 		update_option( 'mkdo_binder_version', MKDO_BINDER_VERSION );
+
+		// TODO:
+		//
+		// Create a file and check for:
+		//
+		// - Thumbnail generator support
+		// - PDF extension support
+		// - Get File Contents Suport
+		// - File permissions.
+		$support = 'TODO';
 	}
 
 	/**
