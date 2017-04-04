@@ -4,10 +4,10 @@
  *
  * @since	0.1.0
  *
- * @package mkdo\ground_control
+ * @package mkdo\binder
  */
 
-namespace mkdo\ground_control;
+namespace mkdo\binder;
 
 /**
  * Get the path of a view
@@ -29,11 +29,11 @@ trait Helper_Render_View {
 	 */
 	public static function render_view( $file_name ) {
 
-		$view_template_folder              = apply_filters( MKDO_GROUND_CONTROL_PREFIX . '_view_template_folder', '' );
-		$view_template_folder_check_exists = apply_filters( MKDO_GROUND_CONTROL_PREFIX . '_view_template_folder_check_exists', false );
+		$view_template_folder              = apply_filters( MKDO_BINDER_PREFIX . '_view_template_folder', '' );
+		$view_template_folder_check_exists = apply_filters( MKDO_BINDER_PREFIX . '_view_template_folder_check_exists', false );
 
 		// Use the `_view_template_folder` filter to check for a custom location,
-		// eg: `get_stylesheet_directory() . '/template-parts/ground-control/'`
+		// eg: `get_stylesheet_directory() . '/template-parts/binder/'`
 		//
 		// You can also use the `_view_template_folder_check_exists` filter to
 		// make sure that the file exists before loading.

@@ -1,4 +1,4 @@
-# Ground Control
+# Binder
 
 A plugin framework, with lots and lots of useful examples and snippets.
 
@@ -9,14 +9,14 @@ sure you do a find and replace for all the variables that make this thing yours.
 
 Here are what to look for, and the defaults that are set (for you to find and replace):
 
-- Plugin Name: `Ground Control`
+- Plugin Name: `Binder`
 - Contributors: `mwtsn, davetgreen, mkdo`
-- Plugin Slug: `ground-control`
-- Plugin Prefix: `mkdo_ground_control`
-- Plugin URI: `https://github.com/mkdo/ground-control`
+- Plugin Slug: `binder`
+- Plugin Prefix: `mkdo_binder`
+- Plugin URI: `https://github.com/mkdo/binder`
 - Author: `Make Do <hello@makedo.net>`
 - Author URL: `https://makedo.net`
-- Constants Prefix: `MKDO_GROUND_CONTROL`
+- Constants Prefix: `MKDO_BINDER`
 - SVN Username: `mwtsn`
 
 ## [Workflow](#workflow)
@@ -64,38 +64,38 @@ Don't have a workflow? We recommend [Kapow](https://github.com/mkdo/kapow-setup)
 The enqueue filters all accept a boolean, and are true by default. Use the
 following method to disable them:
 
-`add_filter( 'mkdo_ground_control_[filter_name]', '__return_false');`
+`add_filter( 'mkdo_binder_[filter_name]', '__return_false');`
 
 The filters available are:
 
-- `mkdo_ground_control_do_public_enqueue` &mdash; hide all the public asset enqueues.
-- `mkdo_ground_control_do_public_css_enqueue` &mdash; hide the public CSS enqueue.
-- `mkdo_ground_control_do_public_js_enqueue` &mdash; hide the public JS enqueue.
-- `mkdo_ground_control_do_admin_enqueue` &mdash; hide all the admin asset enqueues.
-- `mkdo_ground_control_do_admin_css_enqueue` &mdash; hide the admin CSS enqueue.
-- `mkdo_ground_control_do_admin_editor_css_enqueue` &mdash; hide the admin editor CSS enqueue.
-- `mkdo_ground_control_do_admin_js_enqueue` &mdash; hide the admin JS enqueue.
-- `mkdo_ground_control_do_customizer_enqueue` &mdash; hide the customizer CSS enqueue.
+- `mkdo_binder_do_public_enqueue` &mdash; hide all the public asset enqueues.
+- `mkdo_binder_do_public_css_enqueue` &mdash; hide the public CSS enqueue.
+- `mkdo_binder_do_public_js_enqueue` &mdash; hide the public JS enqueue.
+- `mkdo_binder_do_admin_enqueue` &mdash; hide all the admin asset enqueues.
+- `mkdo_binder_do_admin_css_enqueue` &mdash; hide the admin CSS enqueue.
+- `mkdo_binder_do_admin_editor_css_enqueue` &mdash; hide the admin editor CSS enqueue.
+- `mkdo_binder_do_admin_js_enqueue` &mdash; hide the admin JS enqueue.
+- `mkdo_binder_do_customizer_enqueue` &mdash; hide the customizer CSS enqueue.
 
 #### Render Views
 Views reside within the `/views` folder in the plugin, but you may wish to override
 these views in your theme.
 
-Use the filter `mkdo_ground_control_view_template_folder` to set where the view
+Use the filter `mkdo_binder_view_template_folder` to set where the view
 sits within your theme. EG:
 
-`add_filter( 'mkdo_ground_control_view_template_folder', function() {  
-	return get_stylesheet_directory() . '/template-parts/ground-control/';  
+`add_filter( 'mkdo_binder_view_template_folder', function() {  
+	return get_stylesheet_directory() . '/template-parts/binder/';  
 } );`  
 
-You can also return a boolean for the filter `mkdo_ground_control_view_template_folder_check_exists`
+You can also return a boolean for the filter `mkdo_binder_view_template_folder_check_exists`
 to perform an optional check if the template exists in your theme. However best
 practice is duplicating the `/views` folder within your theme at a custom location.
 
 ## [Testing](#testing)
-Runs tests such as example files and functionality by making the filter `mkdo_ground_control_run_tests` return true. EG:
+Runs tests such as example files and functionality by making the filter `mkdo_binder_run_tests` return true. EG:
 
-`add_filter( 'mkdo_ground_control_run_tests', '__return_true');`
+`add_filter( 'mkdo_binder_run_tests', '__return_true');`
 
 ## [Deploying](#deploying)
 This plugin framework contains a deployment script that will tag your build in GitHub
@@ -106,7 +106,7 @@ To use this you will need to make the script executable via the command line usi
 You will be asked to confirm your GitHub and SVN repositories.
 
 ## [More Information](#more-information)
-You can find out more about the plugin, including the changelog in the [`readme.txt` file](https://github.com/mwtsn/ground-control/blob/master/readme.txt), which the
+You can find out more about the plugin, including the changelog in the [`readme.txt` file](https://github.com/mwtsn/binder/blob/master/readme.txt), which the
 WordPress repository uses to display information about the plugin.
 
 You can also view the plugin on the WordPress repository here: N/A
@@ -121,9 +121,9 @@ with a generic `README.md` tailored specifically for a custom plugin.
 
 ## [Credit](#credits)
 
-Built using the [Ground Control](https://github.com/mwtsn/ground-control) plugin framework. A framework based on root composition principles, built by [Matt Watson](https://github.com/mwtsn/) and [Dave Green](https://github.com/davetgreen/), with thanks to [Make Do](https://www.makedo.net/).
+Built using the [Binder](https://github.com/mwtsn/binder) plugin framework. A framework based on root composition principles, built by [Matt Watson](https://github.com/mwtsn/) and [Dave Green](https://github.com/davetgreen/), with thanks to [Make Do](https://www.makedo.net/).
 
-_"Ground Control to Major Tom"_
+_"Binder to Major Tom"_
 &mdash; With a big thanks to [Tom Nowell](https://tomjn.com) for his tutorial on [Root composition](https://tomjn.com/2015/06/24/root-composition-in-wordpress-plugins/) that got this all started.
 
 [Kapow Grunt](https://github.com/mkdo/kapow-grunt) workflow comes with thanks to [Dave Green](https://github.com/davetgreen/) and [Make Do](https://www.makedo.net/).

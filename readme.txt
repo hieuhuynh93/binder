@@ -1,4 +1,4 @@
-=== Ground Control ===
+=== Binder ===
 Contributors: mwtsn, davetgreen, mkdo
 Donate Link:
 Tags:
@@ -26,7 +26,7 @@ If you are using this plugin in your project [We would love to hear about it](ma
 1. Backup your WordPress install
 2. Upload the plugin folder to the `/wp-content/plugins/` directory
 3. Activate the plugin through the 'Plugins' menu in WordPress
-4. Configure the plugin via the 'Ground Control' settings page under the WordPress 'Settings' Menu
+4. Configure the plugin via the 'Binder' settings page under the WordPress 'Settings' Menu
 
 == Screenshots ==
 

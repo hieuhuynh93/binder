@@ -2,10 +2,10 @@
 /**
  * Class Notices_Admin
  *
- * @package mkdo\ground_control
+ * @package mkdo\binder
  */
 
-namespace mkdo\ground_control;
+namespace mkdo\binder;
 
 /**
  * If the plugin needs attention, here is where the notices are set.
@@ -23,7 +23,7 @@ class Notices_Admin {
 	 * Do Work
 	 */
 	public function run() {
-		// add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 	}
 
 	/**
@@ -31,16 +31,10 @@ class Notices_Admin {
 	 */
 	public function admin_notices() {
 
-		// Example
-		//
-		// If 'Shortcake' is not installed, warn the user that some functionality
-		// will be lost unless they install it, and give them the install link.
-		//
-		// To activate warnings in this section, simply uncomment the hook in
-		// the `run()` function.
+		// Shortcake.
 		if ( ! function_exists( 'shortcode_ui_register_for_shortcode' ) ) {
 			$install_url = admin_url( '/wp-admin/plugin-install.php?s=Shortcode%20UI&tab=search&type=term' );
-			$warning     = sprintf( __( 'The %1$sGround Control%2$s plugin works much better when you %3$sinstall and activate the Shortcode UI plugin%4$s.', 'ground-control' ), '<strong>', '</strong>', '<a href="' . esc_url( $install_url ) . '" target="_blank">', '</a>' );
+			$warning     = sprintf( __( 'The %1$sBinder%2$s plugin works much better when you %3$sinstall and activate the Shortcode UI plugin%4$s.', 'binder' ), '<strong>', '</strong>', '<a href="' . esc_url( $install_url ) . '" target="_blank">', '</a>' );
 			?>
 			<div class="notice notice-warning is-dismissible">
 			<p>

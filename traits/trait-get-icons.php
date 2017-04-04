@@ -4,10 +4,10 @@
  *
  * @since	0.1.0
  *
- * @package mkdo\ground_control
+ * @package mkdo\binder
  */
 
-namespace mkdo\ground_control;
+namespace mkdo\binder;
 
 /**
  * An array of icon ID's and Names from Font Awesome

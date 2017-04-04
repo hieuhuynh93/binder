@@ -1,17 +1,18 @@
 <?php
 /**
- * Class Deactivator
+ * Class Activator
  *
  * @since	0.1.0
  *
  * @package mkdo\ground_control
  */
+
 namespace mkdo\ground_control;
 
 /**
  * Carry out actions when the plugin is activated.
  */
-class Deactivator {
+class Activator {
 
 	/**
 	 * Constructor.
@@ -26,16 +27,17 @@ class Deactivator {
 	 * @since	0.1.0
 	 */
 	public function run() {
-		// Register the deactivation callback.
-		register_deactivation_hook( MKDO_GROUND_CONTROL_ROOT, array( $this, 'deactivate' ) );
+		// Register the activation callback.
+		register_activation_hook( MKDO_BINDER_ROOT, array( $this, 'activate' ) );
 	}
 
 	/**
-	 * Deactivate the plugin.
+	 * Activate the plugin.
 	 *
 	 * @since	0.1.0
 	 */
-	public function deactivate() {
-
+	public function activate() {
+		// Set a transient to confirm activation.
+		set_transient( MKDO_BINDER_PREFIX . '_activated', true, 10 );
 	}
 }

@@ -9,7 +9,7 @@
 # https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy.
 
 echo
-echo "WordPress Deployment for Ground Control ('ground-control')"
+echo "WordPress Deployment for Binder ('binder')"
 echo
 echo "Let's collect some information first."
 echo
@@ -18,7 +18,7 @@ echo
 
 # Set up some default values. Feel free to change these in your own script
 CURRENTDIR=`pwd`
-PLUGINSLUG="ground-control"
+PLUGINSLUG="binder"
 default_svnpath="/tmp/$PLUGINSLUG"
 default_svnurl="https://plugins.svn.wordpress.org/$PLUGINSLUG"
 default_svnuser="mwtsn"

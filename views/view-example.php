@@ -4,7 +4,7 @@
  *
  * If you wish to override this file, you can do so by
  *
- * @package mkdo\ground_control
+ * @package mkdo\binder
  */
 
 /**
