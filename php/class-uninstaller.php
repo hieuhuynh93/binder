@@ -38,9 +38,15 @@ class Uninstaller {
 	public function run() {
 		// Exit if WordPress hasn't requested the uninstall.
 		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-			die;
+			exit();
 		}
 
 		// Otherwise, continue.
+		global $wpdb;
+
+		// Drop the binder table if it exists.
+		$table_name = $wpdb->prefix . 'binder_history';
+	    $wpdb->query( "DROP TABLE IF EXISTS $table_name" );
+	    delete_option( 'mkdo_plugin_version' );
 	}
 }

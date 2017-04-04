@@ -109,7 +109,7 @@ class Controller_Main {
 		);
 
 		$this->activator->run();
-		// $this->uninstaller->run();
+		$this->uninstaller->run();
 		$this->settings->run();
 		$this->controller_assets->run();
 		$this->notices_admin->run();
