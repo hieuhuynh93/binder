@@ -54,7 +54,7 @@ class Controller_Assets {
 	}
 
 	/**
-	 * Unleash Hell.
+	 * Go.
 	 *
 	 * @since	0.1.0
 	 */

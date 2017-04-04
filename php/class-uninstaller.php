@@ -36,17 +36,19 @@ class Uninstaller {
 	 * @since		0.1.0
 	 */
 	public function run() {
-		// Exit if WordPress hasn't requested the uninstall.
-		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-			exit();
+		register_uninstall_hook( MKDO_BINDER_ROOT, 'mkdo_binder_uninstall' );
+
+		/**
+		 * Remove the Binder tables
+		 */
+		function mkdo_binder_uninstall() {
+
+			global $wpdb;
+
+			// Drop the binder table if it exists.
+			$table_name = $wpdb->prefix . 'binder_history';
+		    $wpdb->query( "DROP TABLE IF EXISTS $table_name" );
+		    delete_option( 'mkdo_plugin_version' );
 		}
-
-		// Otherwise, continue.
-		global $wpdb;
-
-		// Drop the binder table if it exists.
-		$table_name = $wpdb->prefix . 'binder_history';
-	    $wpdb->query( "DROP TABLE IF EXISTS $table_name" );
-	    delete_option( 'mkdo_plugin_version' );
 	}
 }
