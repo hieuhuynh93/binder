@@ -23,6 +23,8 @@ A bunch of features will be coming to this plugin, including:
 - Better Excerpt
 - Auto Updater
 - Better Refactor Meta, JS and CSS
+- Clean orphan documents
+- Clean orphan db entries
 
 ## [Credit](#credit)
 
