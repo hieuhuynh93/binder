@@ -184,7 +184,7 @@ class Meta_Binder {
 	public function binder_version_control() {
 		$document = new Binder_Document();
 		$history  = $document->get_history();
-		$base     = WP_CONTENT_DIR . '/uploads/documents/';
+		$base     = WP_CONTENT_DIR . '/uploads/binder/';
 		?>
 		<div class="mkdo_meta_box">
 			<table class="binder mkdo_table">
@@ -331,7 +331,7 @@ class Meta_Binder {
 		// 	$remove_posts = $_POST[ MKDO_BINDER_PREFIX . '_remove' ];
 		// 	if ( is_array( $remove_posts ) ) {
 		// 		$history_new  = array();
-		// 		$base         = WP_CONTENT_DIR . '/uploads/documents/';
+		// 		$base         = WP_CONTENT_DIR . '/uploads/binder/';
 		// 		$history      = get_post_meta( $post_id, MKDO_BINDER_PREFIX . '_history', true );
 		// 		if ( ! is_array( $history ) ) {
 		// 			$history = array();
@@ -371,7 +371,7 @@ class Meta_Binder {
 		// 				if ( $latest_file === $version['file'] ) {
 		// 					$version['status'] = 'latest';
 		// 					$output            = '';
-		// 					$base              = WP_CONTENT_DIR . '/uploads/documents/';
+		// 					$base              = WP_CONTENT_DIR . '/uploads/binder/';
 		// 					$path              = $base . $version['folder'];
 		//
 		// 					if ( 'pdf' === $version['type'] ) {
@@ -454,7 +454,7 @@ class Meta_Binder {
 				$type          = pathinfo( $original_name, PATHINFO_EXTENSION );
 				$file_name     = Helper::create_guid();
 				$uploads_dir   = wp_upload_dir();
-				$base          = WP_CONTENT_DIR . '/uploads/documents/';
+				$base          = WP_CONTENT_DIR . '/uploads/binder/';
 				$path          = $base . $folder;
 
 		        // Setup the array of supported file types.
@@ -589,7 +589,7 @@ class Meta_Binder {
 	public function before_delete_post( $post_id ) {
 		$folder  = get_post_meta( $post_id, MKDO_BINDER_PREFIX . '_folder', true );
 
-		$base          = WP_CONTENT_DIR . '/uploads/documents/';
+		$base          = WP_CONTENT_DIR . '/uploads/binder/';
 		$path          = $base . $folder;
 
 		if ( ! empty( $folder ) && file_exists( $path ) ) {

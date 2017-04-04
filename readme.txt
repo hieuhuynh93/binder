@@ -8,11 +8,11 @@ Stable tag: 0.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A brief description of the plugin.
+Document Management System (DMS) for WordPress.
 
 == Description ==
 
-A more in depth description of the plugin.
+Document Management System (DMS) for WordPress.
 
 The plugin provides the following functionality:
 
