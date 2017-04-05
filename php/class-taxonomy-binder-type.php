@@ -23,7 +23,16 @@ class Taxonomy_Binder_Type {
 	 * Constructor
 	 */
 	function __construct() {
-		$this->icons = Helper::get_icons();
+		$this->icons = array();
+		$icons       = Helper::get_icons();
+
+		// We only want the document icons.
+		foreach ( $icons as $icon ) {
+			if ( false !== strpos( $icon['id'], 'file' ) ) {
+				$this->icons[] = $icon;
+			}
+		}
+
 	}
 
 	/**
