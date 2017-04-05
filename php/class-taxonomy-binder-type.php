@@ -91,8 +91,8 @@ class Taxonomy_Binder_Type {
 
 		?>
 		<div class="form-field">
-			<label for="mkdo_binder_binder_type_icon"><?php esc_html_e( 'Icon', 'binder' ); ?></label>
-			<select name="mkdo_binder_binder_type_icon" id="mkdo_binder_binder_type_icon" class="fa-select">
+			<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX . '_type_icon' );?>"><?php esc_html_e( 'Icon', 'binder' ); ?></label>
+			<select name="<?php echo esc_attr( MKDO_BINDER_PREFIX . '_type_icon' );?>" id="<?php echo esc_attr( MKDO_BINDER_PREFIX . '_type_icon' );?>" class="fa-select">
 				<?php
 				foreach ( $this->icons as $icon ) {
 					?>
@@ -120,10 +120,10 @@ class Taxonomy_Binder_Type {
 		?>
 		<tr class="form-field">
 			<th scope="row">
-				<label for="mkdo_binder_binder_type_icon"><?php esc_html_e( 'Icon', 'binder' ); ?></label>
+				<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX . '_type_icon' );?>"><?php esc_html_e( 'Icon', 'binder' ); ?></label>
 			</th>
 			<td>
-				<select pattern="#[a-f0-9]{6}" name="mkdo_binder_binder_type_icon" id="mkdo_binder_binder_type_icon" class="fa-select">
+				<select pattern="#[a-f0-9]{6}" name="<?php echo esc_attr( MKDO_BINDER_PREFIX . '_type_icon' );?>" id="<?php echo esc_attr( MKDO_BINDER_PREFIX . '_type_icon' );?>" class="fa-select">
 					<?php
 					foreach ( $this->icons as $icon ) {
 						?>

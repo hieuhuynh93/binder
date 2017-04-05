@@ -115,6 +115,16 @@ class Controller_Assets {
 		$do_admin_js_enqueue         = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_js_enqueue', true );
 
 		/* CSS */
+		// TODO: Better config of font-awesome.
+		if ( $do_admin_enqueue && $do_admin_css_enqueue ) {
+			$font_awesome_css_url = plugins_url( 'vendor/font-awesome/css/font-awesome.min.css', MKDO_BINDER_ROOT );
+			wp_enqueue_style( 'font-awesome', $font_awesome_css_url, array(), '1.0.0', false );
+		}
+		// TODO: Better config of select2.
+		if ( $do_admin_enqueue && $do_admin_css_enqueue ) {
+			$select2_css_url  = plugins_url( 'vendor/select2/dist/css/select2.min.css', MKDO_BINDER_ROOT );
+			wp_enqueue_style( 'select2', $select2_css_url, array(), '1.0.0', false );
+		}
 		if ( $do_admin_enqueue && $do_admin_css_enqueue ) {
 			$plugin_css_url  = plugins_url( 'assets/css/plugin-admin' . $this->asset_suffix . '.css', MKDO_BINDER_ROOT );
 			$plugin_css_path = dirname( MKDO_BINDER_ROOT ) . '/assets/css/plugin-admin' . $this->asset_suffix . '.css';
@@ -135,13 +145,18 @@ class Controller_Assets {
 		}
 
 		/* JS */
+		// TODO: Better config of select2.
+		if ( $do_admin_enqueue && $do_admin_js_enqueue ) {
+			$select2_js_url  = plugins_url( 'vendor/select2/dist/js/select2.full.min.js', MKDO_BINDER_ROOT );
+			wp_enqueue_script( 'select2', $select2_js_url, array( 'jquery' ), '1.0.0', true );
+		}
 		if ( $do_admin_enqueue && $do_admin_js_enqueue ) {
 			$plugin_js_url   = plugins_url( 'assets/js/plugin-admin' . $this->asset_suffix . '.js', MKDO_BINDER_ROOT );
 			$plugin_js_path  = dirname( MKDO_BINDER_ROOT ) . '/assets/js/plugin-admin' . $this->asset_suffix . '.js';
 			wp_enqueue_script(
 				MKDO_BINDER_PREFIX . '-plugin-admin-js',
 				$plugin_js_url,
-				array( 'jquery' ),
+				array( 'jquery', 'select2' ),
 				filemtime( $plugin_js_path ),
 				true
 			);
