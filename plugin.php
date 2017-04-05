@@ -33,45 +33,62 @@ require_once 'vendor/class.pdf2text.php';
 require_once 'vendor/DocxConversion.php';
 
 require_once 'php/class-helper.php';
-require_once 'php/class-binder-document.php';
+require_once 'php/class-binder.php';
 
 require_once 'php/class-activator.php';
 require_once 'php/class-settings.php';
 require_once 'php/class-controller-assets.php';
 require_once 'php/class-controller-main.php';
-require_once 'php/class-meta-binder.php';
+require_once 'php/class-meta-binder-add-entry.php';
+require_once 'php/class-meta-binder-version-control.php';
 require_once 'php/class-notices-admin.php';
 require_once 'php/class-post-binder.php';
+require_once 'php/class-taxonomy-binder-category.php';
+require_once 'php/class-taxonomy-binder-tag.php';
+require_once 'php/class-taxonomy-binder-type.php';
 
 // Namespaces
 //
 // Add references for each class here. If you add new classes be sure to include
 // the namespace.
 use mkdo\binder\Helper;
+use mkdo\binder\Binder;
 use mkdo\binder\Binder_Document;
 
 use mkdo\binder\Activator;
 use mkdo\binder\Settings;
 use mkdo\binder\Controller_Assets;
 use mkdo\binder\Controller_Main;
-use mkdo\binder\Meta_Binder;
+use mkdo\binder\Meta_Binder_Add_Entry;
+use mkdo\binder\Meta_Binder_Version_Control;
 use mkdo\binder\Notices_Admin;
 use mkdo\binder\Post_Binder;
+use mkdo\binder\Taxonomy_Binder_Category;
+use mkdo\binder\Taxonomy_Binder_Tag;
+use mkdo\binder\Taxonomy_Binder_Type;
 
 // Instances.
-$activator    			  = new Activator();
-$settings                 = new Settings();
-$controller_assets  	  = new Controller_Assets();
-$meta_binder  	          = new Meta_Binder();
-$notices_admin  	      = new Notices_Admin();
-$post_binder  	          = new Post_Binder();
-$controller_main          = new Controller_Main(
+$activator    			     = new Activator();
+$settings                    = new Settings();
+$controller_assets  	     = new Controller_Assets();
+$meta_binder_add_entry       = new Meta_Binder_Add_Entry();
+$meta_binder_version_control = new Meta_Binder_Version_Control();
+$notices_admin  	         = new Notices_Admin();
+$post_binder  	             = new Post_Binder();
+$taxonomy_binder_category    = new Taxonomy_Binder_Category();
+$taxonomy_binder_tag         = new Taxonomy_Binder_Tag();
+$taxonomy_binder_type        = new Taxonomy_Binder_Type();
+$controller_main             = new Controller_Main(
 	$activator,
 	$settings,
 	$controller_assets,
-	$meta_binder,
+	$meta_binder_add_entry,
+	$meta_binder_version_control,
 	$notices_admin,
-	$post_binder
+	$post_binder,
+	$taxonomy_binder_category,
+	$taxonomy_binder_tag,
+	$taxonomy_binder_type
 );
 
 // Go.

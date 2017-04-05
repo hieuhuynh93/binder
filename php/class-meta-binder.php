@@ -54,7 +54,7 @@ class Meta_Binder {
 
 		if ( is_array( $types ) ) {
 			foreach ( $types as $type ) {
-				$type_icon = get_term_meta( $type->term_id, 'mkdo_binder_binder_type_icon', true );
+				$type_icon = get_term_meta( $type->term_id, MKDO_BINDER_PREFIX . '_type_icon', true );
 				if ( is_array( $type_icon ) ) {
 					$type_icon = $type_icon[0];
 				}
@@ -116,7 +116,7 @@ class Meta_Binder {
 	 */
 	public function binder_add_entry() {
 
-		$document        = new Binder_Document();
+		$document        = new Binder();
 		$current_version = $document->get_latest_version();
 		$current_version = explode( '.', $current_version );
 		$count_version   = count( $current_version );
@@ -182,9 +182,9 @@ class Meta_Binder {
 	 * Version Control
 	 */
 	public function binder_version_control() {
-		$document = new Binder_Document();
+		$document = new Binder();
 		$history  = $document->get_history();
-		$base     = WP_CONTENT_DIR . '/uploads/binder/';
+		$base     = apply_filters( MKDO_BINDER_PREFIX . '_document_base', WP_CONTENT_DIR . '/uploads/binder/' );
 		?>
 		<div class="mkdo_meta_box">
 			<table class="binder mkdo_table">
@@ -331,7 +331,7 @@ class Meta_Binder {
 		// 	$remove_posts = $_POST[ MKDO_BINDER_PREFIX . '_remove' ];
 		// 	if ( is_array( $remove_posts ) ) {
 		// 		$history_new  = array();
-		// 		$base         = WP_CONTENT_DIR . '/uploads/binder/';
+		// 		$base         = apply_filters( MKDO_BINDER_PREFIX . '_document_base', WP_CONTENT_DIR . '/uploads/binder/' );
 		// 		$history      = get_post_meta( $post_id, MKDO_BINDER_PREFIX . '_history', true );
 		// 		if ( ! is_array( $history ) ) {
 		// 			$history = array();
@@ -371,7 +371,7 @@ class Meta_Binder {
 		// 				if ( $latest_file === $version['file'] ) {
 		// 					$version['status'] = 'latest';
 		// 					$output            = '';
-		// 					$base              = WP_CONTENT_DIR . '/uploads/binder/';
+		// 					$base              = apply_filters( MKDO_BINDER_PREFIX . '_document_base', WP_CONTENT_DIR . '/uploads/binder/' );
 		// 					$path              = $base . $version['folder'];
 		//
 		// 					if ( 'pdf' === $version['type'] ) {
@@ -416,7 +416,7 @@ class Meta_Binder {
 			// Make sure the file array isn't empty.
 		    if ( ! empty( $_FILES[ MKDO_BINDER_PREFIX . '_file_upload' ]['name'] ) ) {
 
-				$document        = new Binder_Document();
+				$document        = new Binder();
 				$description     = '';
 				$status          = 'latest';
 				$current_version = '0.0.1';
@@ -454,7 +454,7 @@ class Meta_Binder {
 				$type          = pathinfo( $original_name, PATHINFO_EXTENSION );
 				$file_name     = Helper::create_guid();
 				$uploads_dir   = wp_upload_dir();
-				$base          = WP_CONTENT_DIR . '/uploads/binder/';
+				$base          = apply_filters( MKDO_BINDER_PREFIX . '_document_base', WP_CONTENT_DIR . '/uploads/binder/' );
 				$path          = $base . $folder;
 
 		        // Setup the array of supported file types.
@@ -553,12 +553,12 @@ class Meta_Binder {
 
 						wp_set_object_terms( $post_id, array( $type ), 'binder_type', false );
 					}
-					$document->create();
+					$document->create_document();
 		        }
 		    }
 		}
 
-		// $do_comment = apply_filters( 'mkdo_binder_add_history', true, $post_id );
+		// $do_comment = apply_filters( MKDO_BINDER_PREFIX . '_add_history', true, $post_id );
 		//
 		// if ( $do_comment && isset( $_POST[ MKDO_BINDER_PREFIX . '_description' ] ) && ! empty( $_POST[ MKDO_BINDER_PREFIX . '_description' ] ) ) {
 		// 	$description = esc_html( $_POST[ MKDO_BINDER_PREFIX . '_description' ] );
@@ -589,7 +589,7 @@ class Meta_Binder {
 	public function before_delete_post( $post_id ) {
 		$folder  = get_post_meta( $post_id, MKDO_BINDER_PREFIX . '_folder', true );
 
-		$base          = WP_CONTENT_DIR . '/uploads/binder/';
+		$base          = apply_filters( MKDO_BINDER_PREFIX . '_document_base', WP_CONTENT_DIR . '/uploads/binder/' );
 		$path          = $base . $folder;
 
 		if ( ! empty( $folder ) && file_exists( $path ) ) {

@@ -36,6 +36,7 @@ class Post_Binder {
 		add_filter( 'gettext', array( $this, 'title_placeholder' ) );
 		add_action( 'post_type_link', array( $this, 'post_type_link' ), 1, 3 );
 		// add_filter( 'get_the_archive_title', array( $this, 'get_the_archive_title' ), 10, 1 );
+		add_action( 'before_delete_post', array( $this, 'before_delete_post' ), 9999 );
 	}
 
 	/**
@@ -101,7 +102,7 @@ class Post_Binder {
 			'exclude_from_search' => false,
 			'publicly_queryable'  => true,
 			'capability_type'     => 'post',
-			'rewrite'             => array( 'slug' => _x( 'documents', 'Documents URL', 'binder' ) ),
+			'rewrite'             => array( 'slug' => _x( 'document', 'Documents URL', 'binder' ) ),
 		);
 
 		register_post_type( $this->post_type, $args );
@@ -140,7 +141,7 @@ class Post_Binder {
 			// - Do check to see if document permalink supported
 			// - Add documentation and option to settings.
 			$type = '';
-			$types = wp_get_object_terms( $post->ID, 'document_type', array( 'fields' => 'slugs' ) );
+			$types = wp_get_object_terms( $post->ID, 'binder_type', array( 'fields' => 'slugs' ) );
 			if ( is_array( $types ) ) {
 				$type = reset( $types );
 				return rtrim( $link, '/' ) . '.' . $type;
@@ -166,5 +167,43 @@ class Post_Binder {
 	    }
 
 		return $title;
+	}
+
+	/**
+	 * Delete all documents when deleting a Document
+	 *
+	 * @param  int $post_id The post ID.
+	 */
+	public function before_delete_post( $post_id ) {
+
+		$binder   = new Binder();
+		$document = $binder->get_latest_document_by_post_id( $post_id );
+		$folder   = $document->folder;
+
+		// Enabel the base to be filtered.
+		$base     = apply_filters( MKDO_BINDER_PREFIX . '_document_base', apply_filters( MKDO_BINDER_PREFIX . '_document_base', WP_CONTENT_DIR . '/uploads/binder/' ) );
+		$path     = $base . $folder;
+
+		// Remove all document files.
+		if ( ! empty( $folder ) && file_exists( $path ) ) {
+			$iterator = new \RecursiveDirectoryIterator( $path, \RecursiveDirectoryIterator::SKIP_DOTS );
+			$files = new \RecursiveIteratorIterator( $iterator, \RecursiveIteratorIterator::CHILD_FIRST );
+			foreach ( $files as $file ) {
+				if ( file_exists( $file->getRealPath() ) ) {
+				    if ( $file->isDir() ) {
+				        rmdir( $file->getRealPath() );
+				    } else {
+				        unlink( $file->getRealPath() );
+				    }
+				}
+			}
+
+			if ( file_exists( $path ) ) {
+				rmdir( $path );
+			}
+		}
+
+		// Remove the document.
+		$binder->delete_document_history_by_post_id( $post_id );
 	}
 }

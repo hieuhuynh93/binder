@@ -1,6 +1,6 @@
 <?php
 /**
- * Class Load_Binder_Document
+ * Class Load_Binder
  *
  * @package mkdo\binder
  */
@@ -10,7 +10,7 @@ namespace mkdo\binder;
 /**
  * Handle the Document
  */
-class Load_Binder_Document {
+class Load_Binder {
 
 	/**
 	 * Constructor
@@ -133,7 +133,7 @@ class Load_Binder_Document {
 							$folder         = get_post_meta( $document->ID, MKDO_BINDER_PREFIX . '_folder', true );
 							$type           = get_post_meta( $document->ID, MKDO_BINDER_PREFIX . '_type', true );
 							$mime_type      = get_post_meta( $document->ID, MKDO_BINDER_PREFIX . '_mime_type', true );
-							$base           = WP_CONTENT_DIR . '/uploads/binder/';
+							$base           = apply_filters( MKDO_BINDER_PREFIX . '_document_base', WP_CONTENT_DIR . '/uploads/binder/' );
 							$path           = $base . $folder;
 
 							// If the version is set, return that.

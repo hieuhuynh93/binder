@@ -16,6 +16,7 @@ A bunch of features will be coming to this plugin, including:
 - Extension plugin - External Links for Binder
 - Extension plugin - Aglets (Cards) for Binder
 - Extension plugin - Related Documents for Binder
+- Extension plugin - Thumbnail sizes
 - Sort Version Control Column (JS Arrows)
 - Better UI
 - Regenerate Preview images
