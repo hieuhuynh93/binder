@@ -83,8 +83,7 @@ class Controller_Assets {
 				MKDO_BINDER_PREFIX . '-plugin-css',
 				$plugin_css_url,
 				array(),
-				filemtime( $plugin_css_path ),
-				false
+				filemtime( $plugin_css_path )
 			);
 		}
 
@@ -132,8 +131,7 @@ class Controller_Assets {
 				MKDO_BINDER_PREFIX . '-plugin-admin-css',
 				$plugin_css_url,
 				array(),
-				filemtime( $plugin_css_path ),
-				false
+				filemtime( $plugin_css_path )
 			);
 		}
 
