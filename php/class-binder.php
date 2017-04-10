@@ -399,7 +399,7 @@ class Binder {
 		}
 
 		// Create the document.
-		$wpdb->insert(
+		$result = $wpdb->insert(
 			$this->table_name,
 			array(
 				'upload_date' => $document->upload_date,
@@ -422,8 +422,8 @@ class Binder {
 	/**
 	 * Get Latest Version Number by Post ID
 	 *
-	 * @param  int    $post_id  The Post ID.
-	 * @return string           The Version Number.
+	 * @param int $post_id  The Post ID.
+	 * @return string       The Version Number.
 	 *
 	 * @since  0.1.0
 	 */

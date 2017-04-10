@@ -328,13 +328,13 @@ class Meta_Binder_Add_Entry {
 					// Add all existing sizes to the array.
 					$sizes = Helper::get_image_sizes();
 					if ( ! empty( $sizes ) ) {
-						foreach ( $sizes as $key => $size ) {
+						foreach ( $sizes as $key => $s ) {
 							$image = wp_get_image_editor( $path . '/' . $file_name, array( 'mime_type' => $uploaded_type ) );
-							$image->resize( $size['width'], $size['height'], $size['crop'] );
+							$image->resize( $s['width'], $s['height'], $s['crop'] );
 							$image_file = $image->generate_filename( '', $path . '/', 'jpg' );
 							$image->save( $image_file, 'image/jpeg' );
-							$image_file        = str_replace( $path, '', $image_file );
-							$image_file        = trim( $image_file, '/' );
+							$image_file     = str_replace( $path, '', $image_file );
+							$image_file     = trim( $image_file, '/' );
 							$images[ $key ] = $image_file;
 						}
 					}
@@ -351,6 +351,9 @@ class Meta_Binder_Add_Entry {
 					$images = apply_filters( MKDO_BINDER_PREFIX . '_custom_image_sizes', $images, $image );
 				}
 
+				// Convert the array to a string.
+				$images = serialize( $images );
+
 				$document->post_id     = $post_id;
 				$document->upload_date = date( 'Y-m-d H:i:s' );
 				$document->user_id     = get_current_user_id();
@@ -362,7 +365,7 @@ class Meta_Binder_Add_Entry {
 				$document->folder      = $folder;
 				$document->file        = $file_name;
 				$document->size        = $size;
-				$document->thumb       = serialize( $images );
+				$document->thumb       = $images;
 				$document->mime_type   = $uploaded_type;
 
 				// Get the text from the file.
