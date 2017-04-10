@@ -142,6 +142,50 @@ class Binder_Document {
 	 * Constructor
 	 */
 	function __construct() {}
+
+	/**
+	 * Get the Thumbnail
+	 *
+	 * @param  int    $binder_id The document ID.
+	 * @param  string $size      The Image Size.
+	 * @return string            The image URL
+	 *
+	 * @since	0.1.0
+	 */
+	public function get_thumbnail( $binder_id, $size ) {
+		$image_url = '';
+
+		if ( $this->binder_id === $binder_id ) {
+			$document = $this;
+		} else {
+			$binder = new Binder();
+			$document = $binder->get_document( $binder_id );
+		}
+
+		if ( ! empty( $document->thumb ) ) {
+			$thumb  = '';
+			$thumbs = array();
+
+			if ( is_serialized( $document->thumb ) ) {
+				$thumbs = unserialize( $document->thumb );
+			} else {
+				return $thumb;
+			}
+
+			if ( isset( $thumbs[ $size ] ) ) {
+				$thumb = $thumbs[ $size ];
+			} elseif ( isset( $thumbs['default'] ) ) {
+				$thumb = $thumbs['default'];
+			}
+			if ( ! empty( $thumb ) ) {
+				$base = apply_filters( MKDO_BINDER_PREFIX . '_document_base', WP_CONTENT_DIR . '/uploads/binder/' );
+				$image_url = content_url() . $base . $document->folder . '/' . $thumb;
+				wp_die( $image_url );
+			}
+		}
+
+		return $image_url;
+	}
 }
 
 /**
@@ -414,13 +458,32 @@ class Binder {
 			WHERE post_id = '$post_id'
 			ORDER BY upload_date ASC";
 
-		$history = $wpdb->get_results( $sql );
+		$history           = $wpdb->get_results( $sql );
+		$history_documents = array();
 
 		if ( empty( $history ) ) {
 			return array();
+		} else {
+			foreach ( $history as $document ) {
+				$binder_document = new Binder_Document();
+				$binder_document->upload_date = $document->upload_date;
+				$binder_document->post_id     = $document->post_id;
+				$binder_document->user_id     = $document->user_id;
+				$binder_document->type        = $document->type;
+				$binder_document->status      = $document->status;
+				$binder_document->version     = $document->version;
+				$binder_document->name        = $document->name;
+				$binder_document->description = $document->description;
+				$binder_document->folder      = $document->folder;
+				$binder_document->file        = $document->file;
+				$binder_document->size        = $document->size;
+				$binder_document->thumb       = $document->thumb;
+				$binder_document->mime_type   = $document->mime_type;
+				$history_documents[] = $binder_document;
+			}
 		}
 
-		return $history;
+		return $history_documents;
 	}
 
 	/**

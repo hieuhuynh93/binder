@@ -57,7 +57,7 @@ class Activator {
 			folder      VARCHAR(200) DEFAULT '',
 			file        VARCHAR(200) DEFAULT '',
 			size        VARCHAR(20)  DEFAULT '',
-			thumb       VARCHAR(200) DEFAULT '',
+			thumb       LONGTEXT     DEFAULT '',
 			mime_type   VARCHAR(200) DEFAULT '',
 			PRIMARY KEY (binder_id)
 		) $charset_collate;";

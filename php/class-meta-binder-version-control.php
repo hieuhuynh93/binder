@@ -75,7 +75,7 @@ class Meta_Binder_Version_Control {
 						if ( ! empty( $version->thumb ) ) {
 							$uploads    = wp_upload_dir();
 							$thumb      = str_replace( $base, '', $version->thumb );
-							$image_path = esc_url( $uploads['baseurl'] . '/binder/' . $thumb );
+							$image_path = $version->get_thumbnail( $version->binder_id, $size = 'thumbnail' );
 							?>
 							<img src="<?php echo esc_attr( $image_path );?>" alt="File Preview"/>
 							<?php
@@ -250,12 +250,6 @@ class Meta_Binder_Version_Control {
 					wp_update_post( $document_post );
 					add_action( 'save_post', array( $this, 'save_meta' ), 9998 );
 				}
-
-				// TODO: Hooked in behaviour from GFS project, to be realised.
-				//
-				// foreach ( $image_thumbs as $size => $image_thumb_file ) {
-				// 	update_post_meta( $post_id, MKDO_BINDER_PREFIX . '_thumb-' . $size, $image_thumb_file );
-				// }
 
 				// Set the type.
 				wp_set_object_terms( $post_id, array( $document->type ), 'binder_type', false );
