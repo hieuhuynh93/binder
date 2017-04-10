@@ -178,7 +178,8 @@ class Binder_Document {
 				$thumb = $thumbs['default'];
 			}
 			if ( ! empty( $thumb ) ) {
-				$base = apply_filters( MKDO_BINDER_PREFIX . '_document_base', WP_CONTENT_DIR . '/uploads/binder/' );
+				$base      = apply_filters( MKDO_BINDER_PREFIX . '_document_base', WP_CONTENT_DIR . '/uploads/binder/' );
+				$base      = str_replace( WP_CONTENT_DIR, '', $base );
 				$image_url = content_url() . $base . $document->folder . '/' . $thumb;
 			}
 		}
