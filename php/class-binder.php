@@ -8,6 +8,143 @@
 namespace mkdo\binder;
 
 /**
+ * The Binder Document
+ */
+class Binder_Document {
+
+	/**
+	 * The ID of the document.
+	 *
+	 * @var 	bool
+	 * @access	private
+	 * @since	0.1.0
+	 */
+	public $binder_id;
+
+	/**
+	 * The document upload date.
+	 *
+	 * @var 	bool
+	 * @access	private
+	 * @since	0.1.0
+	 */
+	public $upload_date;
+
+	/**
+	 * The post ID associated with the document.
+	 *
+	 * @var 	bool
+	 * @access	private
+	 * @since	0.1.0
+	 */
+	public $post_id;
+
+	/**
+	 * The user that uploaded the document.
+	 *
+	 * @var 	bool
+	 * @access	private
+	 * @since	0.1.0
+	 */
+	public $user_id;
+
+	/**
+	 * The extension of the document.
+	 *
+	 * @var 	bool
+	 * @access	private
+	 * @since	0.1.0
+	 */
+	public $type;
+
+	/**
+	 * The status of the document / type of entry.
+	 *
+	 * @var 	bool
+	 * @access	private
+	 * @since	0.1.0
+	 */
+	public $status;
+
+	/**
+	 * The version of the document.
+	 *
+	 * @var 	bool
+	 * @access	private
+	 * @since	0.1.0
+	 */
+	public $version;
+
+	/**
+	 * The original file name of the document.
+	 *
+	 * @var 	bool
+	 * @access	private
+	 * @since	0.1.0
+	 */
+	public $name;
+
+	/**
+	 * The document description / entry comment.
+	 *
+	 * @var 	bool
+	 * @access	private
+	 * @since	0.1.0
+	 */
+	public $description;
+
+	/**
+	 * The folder the document is stored in.
+	 *
+	 * @var 	bool
+	 * @access	private
+	 * @since	0.1.0
+	 */
+	public $folder;
+
+	/**
+	 * The document file name.
+	 *
+	 * @var 	bool
+	 * @access	private
+	 * @since	0.1.0
+	 */
+	public $file;
+
+	/**
+	 * The size of the document.
+	 *
+	 * @var 	bool
+	 * @access	private
+	 * @since	0.1.0
+	 */
+	public $size;
+
+	/**
+	 * The path to the auto-created thumbnail.
+	 *
+	 * @var 	bool
+	 * @access	private
+	 * @since	0.1.0
+	 */
+	public $thumb;
+
+	/**
+	 * The mime type of the document.
+	 *
+	 * @var 	bool
+	 * @access	private
+	 * @since	0.1.0
+	 */
+	public $mime_type;
+
+	/**
+	 * Constructor
+	 */
+	function __construct() {}
+}
+
+/**
  * The main Class
  */
 class Binder {
@@ -23,15 +160,23 @@ class Binder {
 
 	/**
 	 * Constructor
-	 *
-	 * @param integer $binder_id The ID of the document we wish to retrive.
 	 */
 	function __construct() {
 		global $wpdb, $post;
 
+		// Setup the binder table name.
+		// Note: We could probably think about making this a CONST.
 		$this->table_name = $wpdb->prefix . 'binder_history';
 	}
 
+	/**
+	 * Get the latest document by post ID.
+	 *
+	 * @param  int $post_id The Post ID.
+	 * @return object       A Binder Document.
+	 *
+	 * @since  0.1.0
+	 */
 	public function get_latest_document_by_post_id( $post_id ) {
 		global $wpdb;
 
@@ -89,6 +234,15 @@ class Binder {
 		return $binder_document;
 	}
 
+	/**
+	 * Get the document by version
+	 *
+	 * @param  int    $post_id The Post ID.
+	 * @param  string $version The Version.
+	 * @return object          A Binder Document.
+	 *
+	 * @since  0.1.0
+	 */
 	public function get_document_by_version( $post_id, $version ) {
 		global $wpdb;
 
@@ -128,6 +282,14 @@ class Binder {
 		return $binder_document;
 	}
 
+	/**
+	 * Get Document
+	 *
+	 * @param  int $binder_id The Binder ID.
+	 * @return object         A Binder Document.
+	 *
+	 * @since  0.1.0
+	 */
 	public function get_document( $binder_id ) {
 		global $wpdb;
 
@@ -160,11 +322,17 @@ class Binder {
 		return $binder_document;
 	}
 
+	/**
+	 * Create Document
+	 *
+	 * @param  object $document The Document to Create.
+	 * @param  int    $post_id  The Post ID.
+	 *
+	 * @since  0.1.0
+	 */
 	public function create_document( Binder_Document $document, $post_id ) {
 
 		global $wpdb;
-
-
 
 		// If we are creating the latest version, change the old version.
 		if ( 'latest' === $document->status ) {
@@ -178,6 +346,12 @@ class Binder {
 					'status'  => 'latest',
 				)
 			);
+		}
+
+		// Calculate the document size.
+		$size = $document->size;
+		if ( is_numeric( $size ) ) {
+			$size = Helper::format_bytes( $size );
 		}
 
 		// Create the document.
@@ -194,13 +368,21 @@ class Binder {
 				'description' => $document->description,
 				'folder'      => $document->folder,
 				'file'        => $document->file,
-				'size'        => $document->size,
+				'size'        => $size,
 				'thumb'       => $document->thumb,
 				'mime_type'   => $document->mime_type,
 			)
 		);
 	}
 
+	/**
+	 * Get Latest Version Number by Post ID
+	 *
+	 * @param  int    $post_id  The Post ID.
+	 * @return string           The Version Number.
+	 *
+	 * @since  0.1.0
+	 */
 	public function get_latest_version_by_post_id( $post_id ) {
 		global $wpdb;
 
@@ -217,6 +399,14 @@ class Binder {
 		return $version;
 	}
 
+	/**
+	 * Get History by Post ID
+	 *
+	 * @param  int $post_id The Post ID.
+	 * @return array        An array of Binder Documents.
+	 *
+	 * @since  0.1.0
+	 */
 	public function get_history_by_post_id( $post_id ) {
 		global $wpdb;
 
@@ -233,6 +423,13 @@ class Binder {
 		return $history;
 	}
 
+	/**
+	 * Delete Document by Post ID
+	 *
+	 * @param  int $post_id The Post ID.
+	 *
+	 * @since  0.1.0
+	 */
 	public function delete_document_history_by_post_id( $post_id ) {
 		global $wpdb;
 
@@ -244,6 +441,13 @@ class Binder {
 		);
 	}
 
+	/**
+	 * Delete Document by History Item
+	 *
+	 * @param int $binder_id The Binder ID.
+	 *
+	 * @since  0.1.0
+	 */
 	public function delete_document_history_item( $binder_id ) {
 		global $wpdb;
 
@@ -255,6 +459,13 @@ class Binder {
 		);
 	}
 
+	/**
+	 * Update History Item to Latest
+	 *
+	 * @param int $binder_id The Binder ID.
+	 *
+	 * @since  0.1.0
+	 */
 	public function update_document_history_item_to_latest( $binder_id ) {
 
 		global $wpdb;
@@ -287,30 +498,4 @@ class Binder {
 			)
 		);
 	}
-}
-
-/**
- * The Binder Document
- */
-class Binder_Document {
-
-	public $binder_id;
-	public $upload_date;
-	public $post_id;
-	public $user_id;
-	public $type;
-	public $status;
-	public $version;
-	public $name;
-	public $description;
-	public $folder;
-	public $file;
-	public $size;
-	public $thumb;
-	public $mime_type;
-
-	/**
-	 * Constructor
-	 */
-	function __construct() {}
 }

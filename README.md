@@ -26,6 +26,7 @@ A bunch of features will be coming to this plugin, including:
 - Better Refactor Meta, JS and CSS
 - Clean orphan documents
 - Clean orphan db entries
+- On user delete, either remove a document, or reassign a document.
 
 ## [Credit](#credit)
 
