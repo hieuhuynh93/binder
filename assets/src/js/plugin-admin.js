@@ -77,6 +77,7 @@
 		setTimeout( function(){
 			$( '[data-js-select2=select2]' ).select2();
 			$( '.select2-search--inline' ).hide();
+			$( '.select2-selection__rendered' ).css( 'padding-bottom', '5px' );
 		}, 200 );
 	}
 
@@ -101,5 +102,6 @@
 	} );
 	$( '[data-js-mkdo-binder-list-document=binder]' ).change();
 	$( '.select2-search--inline' ).hide();
+	$( '.select2-selection__rendered' ).css( 'padding-bottom', '5px' );
 
 } )( jQuery );
