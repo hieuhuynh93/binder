@@ -89,7 +89,7 @@ class Meta_Binder_Add_Entry {
 		?>
 		<div class="meta-box">
 			<div class="meta-box__region meta-box__region--entry-select">
-				<div class="meta-box__item meta-box__item--entry-select">
+				<div class="meta-box__item meta-box__item--entry-select" style="display:none;">
 					<p>
 						<label>
 							<?php esc_html_e( 'Type of Entry', 'binder' );?>
@@ -105,6 +105,7 @@ class Meta_Binder_Add_Entry {
 									type="radio"
 									id="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_entry_type_<?php echo esc_attr( $key );?>"
 									name="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_entry_type"
+									value="<?php echo esc_attr( $key );?>"
 									<?php checked( $value, $key, true );?>
 								/>
 								<?php echo esc_html( $option );?>
@@ -119,7 +120,7 @@ class Meta_Binder_Add_Entry {
 			</div>
 			<div class="meta-box__region meta-box__region--add-file">
 				<p>
-					<span class="meta-box__item meta-box__item--version meta-box__item--version-select">
+					<span class="meta-box__item meta-box__item--version meta-box__item--version-select" style="display:none;">
 						<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version">
 							<?php esc_html_e( 'Version', 'binder' );?>
 						</label>
@@ -127,6 +128,8 @@ class Meta_Binder_Add_Entry {
 						<select
 							id="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version"
 							name="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version"
+							readonly="readonly"
+							disabled="disabled"
 						>
 						<?php
 						foreach ( $history as $version ) {
@@ -389,7 +392,7 @@ class Meta_Binder_Add_Entry {
 		do_action( MKDO_BINDER_PREFIX . '_after_add_entry_save' );
 
 		// Support for comments.
-		if ( isset( $_POST[ MKDO_BINDER_PREFIX . '_description' ] ) && ! empty( $_POST[ MKDO_BINDER_PREFIX . '_description' ] ) ) {
+		if ( isset( $_POST[ MKDO_BINDER_PREFIX . '_entry_type' ] ) && 'comment' === $_POST[ MKDO_BINDER_PREFIX . '_entry_type' ] && isset( $_POST[ MKDO_BINDER_PREFIX . '_description' ] ) && ! empty( $_POST[ MKDO_BINDER_PREFIX . '_description' ] ) ) {
 			$description = esc_html( $_POST[ MKDO_BINDER_PREFIX . '_description' ] );
 			$binder      = new Binder();
 			$document    = new Binder_Document();

@@ -2,26 +2,7 @@
 	'use strict';
 
 	/**
-	 * Taxonomy Icons
-	 *
-	 * Add icons to taxonomy meta
-	 */
-	function format_select2_icon( icon ) {
-	    var original = icon.element;
-	    return '<i class="fa fa-' + $( original ).val() + '"></i> - ' + icon.text;
-	}
-
-	$( 'select.fa-select:not(.select2-hidden-accessible), .fa-select select:not(.select2-hidden-accessible)' ).select2( {
-	    templateResult: format_select2_icon,
-	    templateSelection: format_select2_icon,
-		escapeMarkup: function( m ) {
-			return m;
-		}
-	} );
-
-
-	/**
-	 * Document management
+	 * Binder
 	 *
 	 * Version disabled unless file uploaded
 	 */
@@ -40,9 +21,54 @@
 	} );
 
 	/**
+	 * Binder Type
+	 *
+	 * Options to extend the type of Binder Entry.
+	 */
+	$( '.meta-box__item--entry-select' ).show();
+	$( '.meta-box__item--file' ).hide();
+	$( 'input[name=mkdo_binder_entry_type]' ).change( function() {
+		var option = $(this).val();
+		if ( '' !== option && null !== option && undefined !== option ) {
+			if ( 'comment' === option ) {
+				$( '.meta-box__item--file' ).hide();
+				$( '.meta-box__item--version' ).hide();
+				$( '.meta-box__item--version-select' ).show();
+				$( '.meta-box__item--version-select select' ).removeAttr('disabled');
+				$( '.meta-box__item--version-select select' ).removeAttr('readonly');
+			} else if ( 'file' === option ) {
+				$( '.meta-box__item--file' ).show();
+				$( '.meta-box__item--version' ).show();
+				$( '.meta-box__item--version-select' ).hide();
+				$( '.meta-box__item--version-select select' ).attr('disabled');
+				$( '.meta-box__item--version-select select' ).attr('readonly');
+			}
+		}
+	} );
+	$( '[name=mkdo_binder_entry_type]' ).change();
+
+	/**
+	 * Taxonomy Icons
+	 *
+	 * Add icons to taxonomy meta
+	 */
+	function format_select2_icon( icon ) {
+	    var original = icon.element;
+	    return '<i class="fa fa-' + $( original ).val() + '"></i> - ' + icon.text;
+	}
+
+	$( 'select.fa-select:not(.select2-hidden-accessible), .fa-select select:not(.select2-hidden-accessible)' ).select2( {
+	    templateResult: format_select2_icon,
+	    templateSelection: format_select2_icon,
+		escapeMarkup: function( m ) {
+			return m;
+		}
+	} );
+
+	/**
 	 * Document Picker
 	 *
-	 * Populate the version dropdown
+	 * Populate the version dropdown.
 	 */
 	$( '[data-js-select2=select2]' ).select2();
 
