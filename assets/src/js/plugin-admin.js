@@ -73,9 +73,11 @@
 	$( '[data-js-select2=select2]' ).select2();
 
 	function mkdo_binder_list_document_changed() {
-		$( '[data-js-select2=select2]' ).select2();
 		$( '[data-js-mkdo-binder-list-document=binder]' ).change();
-		$( '.select2-search--inline' ).hide();
+		setTimeout( function(){
+			$( '[data-js-select2=select2]' ).select2();
+			$( '.select2-search--inline' ).hide();
+		}, 200 );
 	}
 
 	if ( typeof wp !== 'undefined' && typeof wp.shortcake !== 'undefined' && typeof wp.shortcake.hooks !== 'undefined' ) {

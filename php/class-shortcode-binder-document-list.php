@@ -80,7 +80,7 @@ class Shortcode_Binder_Document_List {
 				$document_tag_terms[ $term->term_id ] = $term->name;
 			}
 		} else {
-			$document_tag_terms[] = esc_html__( 'No terms available', 'binder' );
+			$document_tag_terms[] = '';
 		}
 
 		if ( ! is_wp_error( $document_categories ) &&! empty( $document_categories ) ) {
@@ -88,7 +88,7 @@ class Shortcode_Binder_Document_List {
 				$document_category_terms[ $term->term_id ] = $term->name;
 			}
 		} else {
-			$document_category_terms[] = esc_html__( 'No terms available', 'binder' );
+			$document_category_terms[] = '';
 		}
 
 		$fields = array(
