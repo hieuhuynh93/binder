@@ -108,21 +108,43 @@ class Controller_Assets {
 	 */
 	public function admin_enqueue_scripts() {
 
-		$do_admin_enqueue            = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_enqueue', true );
-		$do_admin_css_enqueue        = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_css_enqueue', true );
-		$do_admin_editor_css_enqueue = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_editor_css_enqueue', false );
-		$do_admin_js_enqueue         = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_js_enqueue', true );
+		$do_admin_enqueue                        = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_enqueue', true );
+		$do_admin_css_enqueue                    = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_css_enqueue', true );
+		$do_admin_editor_css_enqueue             = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_editor_css_enqueue', false );
+		$do_admin_js_enqueue                     = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_js_enqueue', true );
+		$do_admin_vendor_font_awsome_css_enqueue = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_vendor_font_awsome_css_enqueue', true );
+		$do_admin_vendor_select2_css_enqueue     = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_vendor_select2_css_enqueue', true );
+		$do_admin_vendor_select2_js_enqueue      = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_vendor_select2_js_enqueue', true );
+
+		// Main JS file dependencies.
+		$admin_enqueue_dependencies = apply_filters(
+			MKDO_BINDER_PREFIX . '_admin_enqueue_dependencies',
+			array(
+				'jquery',
+				MKDO_BINDER_PREFIX . '-vendor-select2',
+			)
+		);
 
 		/* CSS */
-		// TODO: Better config of font-awesome.
-		if ( $do_admin_enqueue && $do_admin_css_enqueue ) {
-			$font_awesome_css_url = plugins_url( 'vendor/font-awesome/css/font-awesome.min.css', MKDO_BINDER_ROOT );
-			wp_enqueue_style( 'font-awesome', $font_awesome_css_url, array(), '1.0.0', false );
+		if ( $do_admin_enqueue && $do_admin_vendor_font_awsome_css_enqueue ) {
+			$font_awesome_css_url  = plugins_url( 'vendor/font-awesome/css/font-awesome.min.css', MKDO_BINDER_ROOT );
+			$font_awesome_css_path = dirname( MKDO_BINDER_ROOT ) . '/vendor/font-awesome/css/font-awesome.min.css';
+			wp_enqueue_style(
+				MKDO_BINDER_PREFIX . '-vendor-font-awesome',
+				$font_awesome_css_url,
+				array(),
+				filemtime( $font_awesome_css_path )
+			);
 		}
-		// TODO: Better config of select2.
-		if ( $do_admin_enqueue && $do_admin_css_enqueue ) {
+		if ( $do_admin_enqueue && $do_admin_vendor_select2_css_enqueue ) {
 			$select2_css_url  = plugins_url( 'vendor/select2/dist/css/select2.min.css', MKDO_BINDER_ROOT );
-			wp_enqueue_style( 'select2', $select2_css_url, array(), '1.0.0', false );
+			$select2_css_path = dirname( MKDO_BINDER_ROOT ) . '/vendor/select2/dist/css/select2.min.css';
+			wp_enqueue_style(
+				MKDO_BINDER_PREFIX . '-vendor-select2',
+				$select2_css_url,
+				array(),
+				filemtime( $select2_css_path )
+			);
 		}
 		if ( $do_admin_enqueue && $do_admin_css_enqueue ) {
 			$plugin_css_url  = plugins_url( 'assets/css/plugin-admin' . $this->asset_suffix . '.css', MKDO_BINDER_ROOT );
@@ -143,10 +165,16 @@ class Controller_Assets {
 		}
 
 		/* JS */
-		// TODO: Better config of select2.
-		if ( $do_admin_enqueue && $do_admin_js_enqueue ) {
+		if ( $do_admin_enqueue && $do_admin_vendor_select2_js_enqueue ) {
 			$select2_js_url  = plugins_url( 'vendor/select2/dist/js/select2.full.min.js', MKDO_BINDER_ROOT );
-			wp_enqueue_script( 'select2', $select2_js_url, array( 'jquery' ), '1.0.0', true );
+			$select2_js_path = dirname( MKDO_BINDER_ROOT ) . '/vendor/select2/dist/js/select2.full.min.js';
+			wp_enqueue_script(
+				MKDO_BINDER_PREFIX . '-vendor-select2',
+				$select2_js_url,
+				array( 'jquery' ),
+				filemtime( $select2_js_path ),
+				true
+			);
 		}
 		if ( $do_admin_enqueue && $do_admin_js_enqueue ) {
 			$plugin_js_url   = plugins_url( 'assets/js/plugin-admin' . $this->asset_suffix . '.js', MKDO_BINDER_ROOT );
@@ -154,7 +182,7 @@ class Controller_Assets {
 			wp_enqueue_script(
 				MKDO_BINDER_PREFIX . '-plugin-admin-js',
 				$plugin_js_url,
-				array( 'jquery', 'select2' ),
+				$admin_enqueue_dependencies,
 				filemtime( $plugin_js_path ),
 				true
 			);

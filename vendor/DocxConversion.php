@@ -56,15 +56,16 @@ class DocxConversion{
 
  /************************excel sheet************************************/
 
-function xlsx_to_text($input_file){
+function xlsx_to_text(){
     $xml_filename = "xl/sharedStrings.xml"; //content file name
     $zip_handle = new ZipArchive;
     $output_text = "";
-    if(true === $zip_handle->open($input_file)){
+    if(true === $zip_handle->open($this->filename)){
         if(($xml_index = $zip_handle->locateName($xml_filename)) !== false){
             $xml_datas = $zip_handle->getFromIndex($xml_index);
-            $xml_handle = DOMDocument::loadXML($xml_datas, LIBXML_NOENT | LIBXML_XINCLUDE | LIBXML_NOERROR | LIBXML_NOWARNING);
-            $output_text = strip_tags($xml_handle->saveXML());
+			$doc = new DOMDocument();
+            $xml_handle = $doc->loadXML($xml_datas, LIBXML_NOENT | LIBXML_XINCLUDE | LIBXML_NOERROR | LIBXML_NOWARNING);
+            $output_text = strip_tags($doc->saveXML());
         }else{
             $output_text .="";
         }
@@ -76,15 +77,16 @@ function xlsx_to_text($input_file){
 }
 
 /*************************power point files*****************************/
-function pptx_to_text($input_file){
+function pptx_to_text(){
     $zip_handle = new ZipArchive;
     $output_text = "";
-    if(true === $zip_handle->open($input_file)){
+    if(true === $zip_handle->open($this->filename)){
         $slide_number = 1; //loop through slide files
         while(($xml_index = $zip_handle->locateName("ppt/slides/slide".$slide_number.".xml")) !== false){
             $xml_datas = $zip_handle->getFromIndex($xml_index);
-            $xml_handle = DOMDocument::loadXML($xml_datas, LIBXML_NOENT | LIBXML_XINCLUDE | LIBXML_NOERROR | LIBXML_NOWARNING);
-            $output_text .= strip_tags($xml_handle->saveXML());
+			$doc = new DOMDocument();
+            $xml_handle = $doc->loadXML($xml_datas, LIBXML_NOENT | LIBXML_XINCLUDE | LIBXML_NOERROR | LIBXML_NOWARNING);
+            $output_text .= strip_tags($doc->saveXML());
             $slide_number++;
         }
         if($slide_number == 1){

@@ -125,15 +125,15 @@ class Meta_Binder {
 			$current_version = implode( '.', $current_version );
 		}
 		?>
-		<div class="mkdo_meta_box">
-			<div class="mkdo_meta_box__region mkdo_meta_box__region--add-file">
-				<p class="mkdo_meta_box__item binder__status">
+		<div class="meta-box">
+			<div class="meta-box__region meta-box__region--add-file">
+				<p class="meta-box__item binder__status">
 					<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_draft">
 						<input id="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_draft" name="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_draft" type="checkbox" value="draft"/>
 						<?php esc_html_e( 'Document is draft', 'binder' );?>
 					</label>
 				</p>
-				<p class="mkdo_meta_box__item binder__version">
+				<p class="meta-box__item binder__version">
 					<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version">
 						<?php esc_html_e( 'Version', 'binder' );?>
 					</label>
@@ -146,7 +146,7 @@ class Meta_Binder {
 						value="<?php echo esc_attr( $current_version );?>"
 					/>
 				</p>
-				<p class="mkdo_meta_box__item binder__comment">
+				<p class="meta-box__item binder__comment">
 					<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_description">
 						<?php esc_html_e( 'Comment', 'binder' );?>
 					</label>
@@ -156,7 +156,7 @@ class Meta_Binder {
 						name="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_description"
 					/></textarea>
 				</p>
-				<p class="mkdo_meta_box__item binder__file">
+				<p class="meta-box__item binder__file">
 					<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_file_upload">
 						<?php esc_html_e( 'Upload File', 'binder' );?>
 					</label>
@@ -186,7 +186,7 @@ class Meta_Binder {
 		$history  = $document->get_history();
 		$base     = apply_filters( MKDO_BINDER_PREFIX . '_document_base', WP_CONTENT_DIR . '/uploads/binder/' );
 		?>
-		<div class="mkdo_meta_box">
+		<div class="meta-box">
 			<table class="binder mkdo_table">
 				<tr>
 					<th class="binder__preview"><?php esc_html_e( 'Preview', 'binder' );?></th>

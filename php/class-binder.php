@@ -89,6 +89,45 @@ class Binder {
 		return $binder_document;
 	}
 
+	public function get_document_by_version( $post_id, $version ) {
+		global $wpdb;
+
+		// Attempt to get the version.
+		$sql = "SELECT * FROM $this->table_name
+			WHERE post_id = '$post_id'
+			AND version = '$version';";
+
+		$document = $wpdb->get_row( $sql );
+
+		// Looks like we have no 'versions', so lets try the
+		// latest.
+		if ( ! is_object( $document ) ) {
+			$document = $this->get_latest_document_by_post_id( $post_id );
+		}
+
+		$binder_document = new Binder_Document();
+
+		// Set the Binder object.
+		if ( is_object( $document ) ) {
+
+			$binder_document->upload_date = $document->upload_date;
+			$binder_document->post_id     = $document->post_id;
+			$binder_document->user_id     = $document->user_id;
+			$binder_document->type        = $document->type;
+			$binder_document->status      = $document->status;
+			$binder_document->version     = $document->version;
+			$binder_document->name        = $document->name;
+			$binder_document->description = $document->description;
+			$binder_document->folder      = $document->folder;
+			$binder_document->file        = $document->file;
+			$binder_document->size        = $document->size;
+			$binder_document->thumb       = $document->thumb;
+			$binder_document->mime_type   = $document->mime_type;
+		}
+
+		return $binder_document;
+	}
+
 	public function get_document( $binder_id ) {
 		global $wpdb;
 
@@ -124,6 +163,8 @@ class Binder {
 	public function create_document( Binder_Document $document, $post_id ) {
 
 		global $wpdb;
+
+
 
 		// If we are creating the latest version, change the old version.
 		if ( 'latest' === $document->status ) {

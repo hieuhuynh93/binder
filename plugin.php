@@ -39,7 +39,9 @@ require_once 'php/class-activator.php';
 require_once 'php/class-settings.php';
 require_once 'php/class-controller-assets.php';
 require_once 'php/class-controller-main.php';
+require_once 'php/class-load-binder-document.php';
 require_once 'php/class-meta-binder-add-entry.php';
+require_once 'php/class-meta-binder-document-type.php';
 require_once 'php/class-meta-binder-version-control.php';
 require_once 'php/class-notices-admin.php';
 require_once 'php/class-post-binder.php';
@@ -59,7 +61,9 @@ use mkdo\binder\Activator;
 use mkdo\binder\Settings;
 use mkdo\binder\Controller_Assets;
 use mkdo\binder\Controller_Main;
+use mkdo\binder\Load_Binder_Document;
 use mkdo\binder\Meta_Binder_Add_Entry;
+use mkdo\binder\Meta_Binder_Document_Type;
 use mkdo\binder\Meta_Binder_Version_Control;
 use mkdo\binder\Notices_Admin;
 use mkdo\binder\Post_Binder;
@@ -71,7 +75,9 @@ use mkdo\binder\Taxonomy_Binder_Type;
 $activator    			     = new Activator();
 $settings                    = new Settings();
 $controller_assets  	     = new Controller_Assets();
+$load_binder_document  	     = new Load_Binder_Document();
 $meta_binder_add_entry       = new Meta_Binder_Add_Entry();
+$meta_binder_document_type   = new Meta_Binder_Document_Type();
 $meta_binder_version_control = new Meta_Binder_Version_Control();
 $notices_admin  	         = new Notices_Admin();
 $post_binder  	             = new Post_Binder();
@@ -82,7 +88,9 @@ $controller_main             = new Controller_Main(
 	$activator,
 	$settings,
 	$controller_assets,
+	$load_binder_document,
 	$meta_binder_add_entry,
+	$meta_binder_document_type,
 	$meta_binder_version_control,
 	$notices_admin,
 	$post_binder,

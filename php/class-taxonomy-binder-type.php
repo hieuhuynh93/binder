@@ -156,6 +156,6 @@ class Taxonomy_Binder_Type {
 	 * Remove Meta Box
 	 */
 	public function remove_meta_boxes() {
-		remove_meta_box( 'binder_typediv' , 'document' , 'side' );
+		remove_meta_box( 'binder_typediv' , 'binder' , 'side' );
 	}
 }

@@ -69,38 +69,55 @@ class Meta_Binder_Add_Entry {
 			$current_version = implode( '.', $current_version );
 		}
 		?>
-		<div class="mkdo_meta_box">
-			<div class="mkdo_meta_box__region mkdo_meta_box__region--add-file">
-				<p class="mkdo_meta_box__item binder__version">
-					<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version">
-						<?php esc_html_e( 'Version', 'binder' );?>
-					</label>
-					<br/>
-					<input
-						type="text"
-						id="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version"
-						name="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version"
-						pattern="^\d+(\.\d+)*$"
-						value="<?php echo esc_attr( $current_version );?>"
-					/>
+		<div class="meta-box">
+			<div class="meta-box__region meta-box__region--add-file">
+				<p>
+					<span class="meta-box__item binder__version">
+						<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version">
+							<?php esc_html_e( 'Version', 'binder' );?>
+						</label>
+						<br/>
+						<input
+							type="text"
+							id="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version"
+							name="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version"
+							pattern="^\d+(\.\d+)*$"
+							value="<?php echo esc_attr( $current_version );?>"
+						/>
+					</span>
+					<span class="meta-box__item binder__status">
+						<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_draft">
+							<input id="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_draft" name="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_draft" type="checkbox" value="draft"/>
+							<?php esc_html_e( 'Document is draft', 'binder' );?>
+						</label>
+					</span>
 				</p>
-				<p class="mkdo_meta_box__item binder__status">
-					<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_draft">
-						<input id="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_draft" name="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_draft" type="checkbox" value="draft"/>
-						<?php esc_html_e( 'Document is draft', 'binder' );?>
-					</label>
-				</p>
-				<p class="mkdo_meta_box__item binder__comment">
-					<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_description">
-						<?php esc_html_e( 'Comment', 'binder' );?>
-					</label>
-					<br/>
-					<textarea
-						id="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_description"
-						name="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_description"
-					/></textarea>
-				</p>
-				<p class="mkdo_meta_box__item binder__file">
+				<div class="meta-box__item binder__comment">
+					<p>
+						<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_description">
+							<?php esc_html_e( 'Comment', 'binder' );?>
+						</label>
+						<br/>
+						<!-- <textarea
+							id="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_description"
+							name="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_description"
+						/></textarea> -->
+						<?php
+						wp_editor(
+							'',
+							esc_attr( MKDO_BINDER_PREFIX ) . '_description',
+							array(
+								'media_buttons' => false,
+								'textarea_rows' => 5,
+								'teeny'         => true,
+								'quicktags'     => false,
+							)
+						);
+						?>
+					</p>
+					<p class="description"><?php esc_html_e( 'Add a comment to this entry.', 'binder' );?></p>
+				</div>
+				<p class="meta-box__item binder__file">
 					<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_file_upload">
 						<?php esc_html_e( 'Upload File', 'binder' );?>
 					</label>

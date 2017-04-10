@@ -29,9 +29,14 @@
 #binder_version_control table th {
   border-right: 1px solid #e5e5e5; }
 
+#binder_version_control table td:first-child,
+#binder_version_control table th:first-child {
+  padding-left: 12px; }
+
 #binder_version_control table td:last-child,
 #binder_version_control table th:last-child {
-  border-right: 0px solid #e5e5e5; }
+  border-right: 0px solid #e5e5e5;
+  padding-right: 12px; }
 
 #binder_version_control table th,
 #binder_version_control table td {
@@ -51,19 +56,19 @@
 #binder_version_control table textarea {
   width: 100%; }
 
-#binder_version_control table tr th.document-management__preview {
+#binder_version_control table tr th.binder-history__column--preview {
   width: 10%; }
 
-#binder_version_control table tr th.document-management__status {
+#binder_version_control table tr th.binder-history__column--status {
   width: 10%; }
 
-#binder_version_control table tr th.document-management__version {
+#binder_version_control table tr th.binder-history__column--version {
   width: 10%; }
 
-#binder_version_control table tr th.document-management__comment {
+#binder_version_control table tr th.binder-history__column--comment {
   width: 50%; }
 
-#binder_version_control table tr th.document-management__file {
+#binder_version_control table tr th.binder-history__column--file {
   width: 20%; }
 
 #binder_version_control table img {
@@ -94,12 +99,12 @@
     display: inline-block;
     vertical-align: top;
     margin-bottom: 1em; }
-  #binder_version_control table tr td.document-management__preview,
-  #binder_version_control table tr td.document-management__status,
-  #binder_version_control table tr td.document-management__version,
-  #binder_version_control table tr td.document-management__comment,
-  #binder_version_control table tr td.document-management__remove,
-  #binder_version_control table tr td.document-management__file {
+  #binder_version_control table tr td.binder-history__column--preview,
+  #binder_version_control table tr td.binder-history__column--status,
+  #binder_version_control table tr td.binder-history__column--version,
+  #binder_version_control table tr td.binder-history__column--comment,
+  #binder_version_control table tr td.binder-history__column--remove,
+  #binder_version_control table tr td.binder-history__column--file {
     width: 100%;
     box-sizing: border-box; }
   #binder_version_control table input[type="text"],

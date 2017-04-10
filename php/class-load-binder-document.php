@@ -1,6 +1,6 @@
 <?php
 /**
- * Class Load_Binder
+ * Class Load_Binder_Document
  *
  * @package mkdo\binder
  */
@@ -10,7 +10,7 @@ namespace mkdo\binder;
 /**
  * Handle the Document
  */
-class Load_Binder {
+class Load_Binder_Document {
 
 	/**
 	 * Constructor
@@ -33,12 +33,8 @@ class Load_Binder {
 
 		global $wp_query, $post;
 
-		$name = '';
-
-		// Get the document name.
-		if ( isset( $wp_query->query['name'] ) ) {
-			$name = $wp_query->query['name'];
-		}
+		// Get the page slug.
+		$slug = Helper::page_slug_from_url();
 
 		// If we are:
 		//
@@ -52,12 +48,12 @@ class Load_Binder {
 			! is_admin() &&
 			(
 				is_404() ||
-				'.' === substr( $name, -1 )
+				'.' === substr( $slug, -1 )
 			)
 		) {
 			// Split the documetn by its suffix.
 			// This should still work if there is no suffix.
-			$name_parts = explode( '.', $name );
+			$name_parts = explode( '.', $slug );
 
 			// If the name_parts is now an array.
 			if ( count( $name_parts ) >= 1 ) {
@@ -129,36 +125,31 @@ class Load_Binder {
 
 						// We can load the document, lets load it.
 						if ( $load_document ) {
-							$file_name      = get_post_meta( $document->ID, MKDO_BINDER_PREFIX . '_latest', true );
-							$folder         = get_post_meta( $document->ID, MKDO_BINDER_PREFIX . '_folder', true );
-							$type           = get_post_meta( $document->ID, MKDO_BINDER_PREFIX . '_type', true );
-							$mime_type      = get_post_meta( $document->ID, MKDO_BINDER_PREFIX . '_mime_type', true );
-							$base           = apply_filters( MKDO_BINDER_PREFIX . '_document_base', WP_CONTENT_DIR . '/uploads/binder/' );
-							$path           = $base . $folder;
+
+							$binder = new Binder();
+							$latest_document = $binder->get_latest_document_by_post_id( $document->ID );
+							$file_name       = $latest_document->file;
+							$folder          = $latest_document->folder;
+							$type            = $latest_document->type;
+							$mime_type       = $latest_document->mime_type;
+							$base            = apply_filters( MKDO_BINDER_PREFIX . '_document_base', WP_CONTENT_DIR . '/uploads/binder/' );
+							$path            = $base . $folder;
 
 							// If the version is set, return that.
 							if ( isset( $_GET['v'] ) ) {
-								$get_version = esc_attr( $_GET['v'] );
-								$history = get_post_meta( $document->ID, MKDO_BINDER_PREFIX . '_history', true );
-								if ( ! is_array( $history ) ) {
-									$history = array();
-								}
-								foreach ( $history as $version ) {
-									if ( $get_version === $version['version'] ) {
-										$file_name = esc_attr( $version['file'] );
-										$type      = esc_attr( $version['type'] );
-										$mime_type = esc_attr( $version['mime_type'] );
-										break;
-									}
-								}
+								$version_document = $binder->get_document_by_version( $document->ID, esc_attr( $_GET['v'] ) );
+								$file_name        = $version_document->file;
+								$folder           = $version_document->folder;
+								$type             = $version_document->type;
+								$mime_type        = $version_document->mime_type;
 							}
 
 							// TODO:
-							// If $name does not have a suffix, we will need to add one here.
+							// If $slug does not have a suffix, we will need to add one here.
 							if ( ! empty( $file_name ) && file_exists( $path . '/' . $file_name ) ) {
 								status_header( 200 );
 								header( 'Content-type:' . $mime_type );
-								header( "Content-Disposition:attachment;filename='" . $name . "'" );
+								header( "Content-Disposition:attachment;filename='" . $slug . "'" );
 								readfile( $path . '/' . $file_name );
 								exit;
 							}
