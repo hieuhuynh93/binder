@@ -202,6 +202,7 @@ class Meta_Binder_Version_Control {
 			return $post_id;
 		}
 
+
 		// Remove selected files.
 		if ( isset( $_POST[ MKDO_BINDER_PREFIX . '_remove' ] ) ) {
 			$binder    = new Binder();
@@ -245,7 +246,7 @@ class Meta_Binder_Version_Control {
 				if ( ! empty( $output ) ) {
 					$document_post               = get_post( $post_id );
 					$document_post->post_content = apply_filters( 'the_content', $output );
-					remove_action( 'save_post', array( $this, 'save_meta' ), 9999 );
+					remove_action( 'save_post', array( $this, 'save_meta' ), 9998 );
 					wp_update_post( $document_post );
 					add_action( 'save_post', array( $this, 'save_meta' ), 9999 );
 				}

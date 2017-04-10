@@ -19,38 +19,6 @@
 		}
 	} );
 
-	/**
-	 * Person Meta Repeater Selection Filter
-	 */
-	if ( $( '#_document_type_core_person_other_repeat' ).length > 0 ) {
-
-		// Resize link picker resize when new item added
-		$( document ).on( 'click', '#_document_type_core_person_other_repeat button.cmb-add-group-row', function() {
-			adjust_element_size();
-		} );
-
-		// Resize link picker resize when handle expanded
-		$( document ).on( 'click', '#_document_type_core_person_other_repeat .cmbhandle-title', function() {
-			adjust_element_size();
-		} );
-	}
-
-	/**
-	 * Link picker size adjuster
-	 */
-	function adjust_element_size() {
-		$( '.link-picker div' ).attr( 'style','' );
-		$( '.cmb-type-link-picker' ).each( function() {
-			url       = $( this ).find( 'input.cmb_text_url' );
-			container = $( this ).find( '.link-picker' );
-			if( url.width() < 150 ) {
-				container.find( 'div' ).each( function() {
-						$( this ).css( 'width', '50%' );
-					}
-				);
-			}
-		} );
-    }
 
 	/**
 	 * Document management
@@ -58,16 +26,16 @@
 	 * Version disabled unless file uploaded
 	 */
 	$( '#mkdo_binder_draft' ).attr( 'disabled', 'disabled' );
-	$( '#mkdo_binder_version' ).attr( 'disabled', 'disabled' );
+	$( '.meta-box__item:not(.meta-box__item--version-select) #mkdo_binder_version' ).attr( 'disabled', 'disabled' );
 
 	$( '#mkdo_binder_file_upload' ).change( function() {
 		var file = $(this).val();
 		if ( '' !== file && null !== file && undefined !== file ) {
 			$( '#mkdo_binder_draft' ).removeAttr( 'disabled' );
-			$( '#mkdo_binder_version' ).removeAttr( 'disabled' );
+			$( '.meta-box__item:not(.meta-box__item--version-select) #mkdo_binder_version' ).removeAttr( 'disabled' );
 		} else {
 			$( '#mkdo_binder_draft' ).attr( 'disabled', 'disabled' );
-			$( '#mkdo_binder_version' ).attr( 'disabled', 'disabled' );
+			$( '.meta-box__item:not(.meta-box__item--version-select) #mkdo_binder_version' ).attr( 'disabled', 'disabled' );
 		}
 	} );
 

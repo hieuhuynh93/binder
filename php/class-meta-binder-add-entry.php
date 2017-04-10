@@ -68,11 +68,83 @@ class Meta_Binder_Add_Entry {
 			$current_version[ $count_version - 1 ] = $current_version[ $count_version - 1 ] + 1;
 			$current_version = implode( '.', $current_version );
 		}
+
+		// Get binder history.
+		$history = $binder->get_history_by_post_id( $post->ID );
+
+		// Get the Type of Entry.
+		$value = get_post_meta( $post->ID, esc_attr( MKDO_BINDER_PREFIX ) . '_entry_type', true );
+		if ( empty( $value ) ) {
+			$value = 'file';
+		}
+
+		// Setup entry types.
+		$entry_options = apply_filters(
+			MKDO_BINDER_PREFIX . '_entry_options',
+			array(
+				'comment' => 'Add Comment',
+				'file'    => 'Upload File',
+			)
+		);
 		?>
 		<div class="meta-box">
+			<div class="meta-box__region meta-box__region--entry-select">
+				<div class="meta-box__item meta-box__item--entry-select">
+					<p>
+						<label>
+							<?php esc_html_e( 'Type of Entry', 'binder' );?>
+						</label>
+					</p>
+					<ul>
+						<?php
+						foreach ( $entry_options as $key => $option ) {
+						?>
+						<li>
+							<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_entry_type_<?php echo esc_attr( $key );?>">
+								<input
+									type="radio"
+									id="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_entry_type_<?php echo esc_attr( $key );?>"
+									name="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_entry_type"
+									<?php checked( $value, $key, true );?>
+								/>
+								<?php echo esc_html( $option );?>
+							</label>
+						</li>
+						<?php
+						}
+						?>
+					</ul>
+					<p class="description"><?php esc_html_e( 'Select the type of entry.', 'binder' );?></p>
+				</div>
+			</div>
 			<div class="meta-box__region meta-box__region--add-file">
 				<p>
-					<span class="meta-box__item binder__version">
+					<span class="meta-box__item meta-box__item--version meta-box__item--version-select">
+						<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version">
+							<?php esc_html_e( 'Version', 'binder' );?>
+						</label>
+						<br/>
+						<select
+							id="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version"
+							name="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version"
+						>
+						<?php
+						foreach ( $history as $version ) {
+							if ( 'latest' === $version->status || 'archive' === $version->status || 'draft' === $version->status ) {
+							?>
+							<option
+								value="<?php echo esc_attr( $version->version );?>"
+								<?php echo 'latest' === $version->status ? 'selected="selected"' : '';?>
+							>
+							<?php echo esc_html( $version->version );?>
+							</option>
+							<?php
+							}
+						}
+						?>
+						</select>
+					</span>
+					<span class="meta-box__item meta-box__item--version">
 						<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version">
 							<?php esc_html_e( 'Version', 'binder' );?>
 						</label>
@@ -85,14 +157,14 @@ class Meta_Binder_Add_Entry {
 							value="<?php echo esc_attr( $current_version );?>"
 						/>
 					</span>
-					<span class="meta-box__item binder__status">
+					<span class="meta-box__item meta-box__item--status">
 						<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_draft">
 							<input id="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_draft" name="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_draft" type="checkbox" value="draft"/>
 							<?php esc_html_e( 'Document is draft', 'binder' );?>
 						</label>
 					</span>
 				</p>
-				<div class="meta-box__item binder__comment">
+				<div class="meta-box__item meta-box__item--comment">
 					<p>
 						<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_description">
 							<?php esc_html_e( 'Comment', 'binder' );?>
@@ -117,7 +189,7 @@ class Meta_Binder_Add_Entry {
 					</p>
 					<p class="description"><?php esc_html_e( 'Add a comment to this entry.', 'binder' );?></p>
 				</div>
-				<p class="meta-box__item binder__file">
+				<p class="meta-box__item meta-box__item--file">
 					<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_file_upload">
 						<?php esc_html_e( 'Upload File', 'binder' );?>
 					</label>
@@ -309,8 +381,39 @@ class Meta_Binder_Add_Entry {
 					// Update the type.
 					wp_set_object_terms( $post_id, array( $type ), 'binder_type', false );
 				}
-				$binder->create_document( $document, $post_id );
+				$binder->add_entry( $document, $post_id );
 	        }
 	    }
+
+		// Other save actions.
+		do_action( MKDO_BINDER_PREFIX . '_after_add_entry_save' );
+
+		// Support for comments.
+		if ( isset( $_POST[ MKDO_BINDER_PREFIX . '_description' ] ) && ! empty( $_POST[ MKDO_BINDER_PREFIX . '_description' ] ) ) {
+			$description = esc_html( $_POST[ MKDO_BINDER_PREFIX . '_description' ] );
+			$binder      = new Binder();
+			$document    = new Binder_Document();
+			$version     = $binder->get_latest_version_by_post_id( $post_id );
+
+			if ( isset( $_POST[ MKDO_BINDER_PREFIX . '_version' ] ) ) {
+				$version = esc_html( $_POST[ MKDO_BINDER_PREFIX . '_version' ] );
+			}
+
+			$document->post_id     = $post_id;
+			$document->upload_date = date( 'Y-m-d H:i:s' );
+			$document->user_id     = get_current_user_id();
+			$document->type        = 'comment';
+			$document->status      = 'comment';
+			$document->version     = $version;
+			$document->name        = '';
+			$document->description = $description;
+			$document->folder      = '';
+			$document->file        = '';
+			$document->size        = '';
+			$document->thumb       = '';
+			$document->mime_type   = '';
+
+			$binder->add_entry( $document, $post_id );
+		}
 	}
 }

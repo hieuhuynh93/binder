@@ -330,7 +330,7 @@ class Binder {
 	 *
 	 * @since  0.1.0
 	 */
-	public function create_document( Binder_Document $document, $post_id ) {
+	public function add_entry( Binder_Document $document, $post_id ) {
 
 		global $wpdb;
 
