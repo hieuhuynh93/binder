@@ -180,7 +180,6 @@ class Binder_Document {
 			if ( ! empty( $thumb ) ) {
 				$base = apply_filters( MKDO_BINDER_PREFIX . '_document_base', WP_CONTENT_DIR . '/uploads/binder/' );
 				$image_url = content_url() . $base . $document->folder . '/' . $thumb;
-				wp_die( $image_url );
 			}
 		}
 
