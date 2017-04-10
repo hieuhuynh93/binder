@@ -75,12 +75,20 @@ class Shortcode_Binder_Document_List {
 			$documents_list[ $document->ID ] = $document->post_title;
 		}
 
-		foreach ( $document_tags as $term ) {
-			$document_tag_terms[ $term->term_id ] = $term->name;
+		if ( ! is_wp_error( $document_tags ) && ! empty( $document_tags ) ) {
+			foreach ( $document_tags as $term ) {
+				$document_tag_terms[ $term->term_id ] = $term->name;
+			}
+		} else {
+			$document_tag_terms[] = esc_html__( 'No terms available', 'binder' );
 		}
 
-		foreach ( $document_categories as $term ) {
-			$document_category_terms[ $term->term_id ] = $term->name;
+		if ( ! is_wp_error( $document_categories ) &&! empty( $document_categories ) ) {
+			foreach ( $document_categories as $term ) {
+				$document_category_terms[ $term->term_id ] = $term->name;
+			}
+		} else {
+			$document_category_terms[] = esc_html__( 'No terms available', 'binder' );
 		}
 
 		$fields = array(
@@ -231,7 +239,7 @@ class Shortcode_Binder_Document_List {
 
 		// Display Types filter.
 		$display_types = apply_filters(
-			MKDO_BINDER_PREFIX . '_shortcode_binder_document_display_types',
+			MKDO_BINDER_PREFIX . '_shortcode_binder_document_list_display_types',
 			array(
 				'list' => esc_html__( 'List', 'binder' ),
 			)
@@ -393,7 +401,7 @@ class Shortcode_Binder_Document_List {
 
 		// Render the default view type.
 		if ( 'list' === $attr['list_type'] ) {
-			include Helper::render_view( 'view-document-list' );
+			include Helper::render_view( 'view-binder-document-list' );
 		}
 
 		// Render additional view types.
