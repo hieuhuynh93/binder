@@ -72,17 +72,17 @@
 	 */
 	$( '[data-js-select2=select2]' ).select2();
 
-	function mkdo_document_list_document_changed() {
+	function mkdo_binder_list_document_changed() {
 		$( '[data-js-select2=select2]' ).select2();
-		$( '[data-js-mkdo-document-list-document=document]' ).change();
+		$( '[data-js-mkdo-binder-list-document=binder]' ).change();
 	}
 
-	if ( typeof wp !== 'undefined' && typeof wp.shortcake !== 'undefined' && typeof wp.shortcake.hooks !== 'undefined' ) {
-		wp.shortcake.hooks.addAction( 'shortcode-ui.render_new', mkdo_document_list_document_changed );
-		wp.shortcake.hooks.addAction( 'shortcode-ui.render_edit', mkdo_document_list_document_changed );
-	}
 
-	$( document ).on( 'change', '[data-js-mkdo-document-list-document=document]', function() {
+		wp.shortcake.hooks.addAction( 'shortcode-ui.render_new', mkdo_binder_list_document_changed );
+		wp.shortcake.hooks.addAction( 'shortcode-ui.render_edit', mkdo_binder_list_document_changed );
+
+
+	$( document ).on( 'change', '[data-js-mkdo-binder-list-document=binder]', function() {
 		var document_id = $(this).val();
 		jQuery.ajax( {
 			url : binder_admin.ajax_url,
@@ -92,9 +92,10 @@
 				document_id : document_id
 			},
 			success : function( response ) {
-				$( '[data-js-mkdo-document-list-version=version]' ).html( response );
+				$( '[data-js-mkdo-binder-list-version=version]' ).html( response );
 			}
 		} );
 	} );
+	$( '[data-js-mkdo-binder-list-document=binder]' ).change();
 
 } )( jQuery );

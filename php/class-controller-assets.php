@@ -71,11 +71,22 @@ class Controller_Assets {
 	 */
 	public function public_enqueue_scripts() {
 
-		$do_public_enqueue     = apply_filters( MKDO_BINDER_PREFIX . '_do_public_enqueue', false );
-		$do_public_css_enqueue = apply_filters( MKDO_BINDER_PREFIX . '_do_public_css_enqueue', false );
-		$do_public_js_enqueue  = apply_filters( MKDO_BINDER_PREFIX . '_do_public_js_enqueue', false );
+		$do_public_enqueue                 = apply_filters( MKDO_BINDER_PREFIX . '_do_public_enqueue', true );
+		$do_public_css_enqueue             = apply_filters( MKDO_BINDER_PREFIX . '_do_public_css_enqueue', false );
+		$do_public_js_enqueue              = apply_filters( MKDO_BINDER_PREFIX . '_do_public_js_enqueue', false );
+		$do_vendor_font_awsome_css_enqueue = apply_filters( MKDO_BINDER_PREFIX . '_do_vendor_font_awsome_css_enqueue', true );
 
 		/* CSS */
+		if ( $do_public_enqueue && $do_vendor_font_awsome_css_enqueue ) {
+			$font_awesome_css_url  = plugins_url( 'vendor/font-awesome/css/font-awesome.min.css', MKDO_BINDER_ROOT );
+			$font_awesome_css_path = dirname( MKDO_BINDER_ROOT ) . '/vendor/font-awesome/css/font-awesome.min.css';
+			wp_enqueue_style(
+				MKDO_BINDER_PREFIX . '-vendor-font-awesome',
+				$font_awesome_css_url,
+				array(),
+				filemtime( $font_awesome_css_path )
+			);
+		}
 		if ( $do_public_enqueue && $do_public_css_enqueue ) {
 			$plugin_css_url  = plugins_url( 'assets/css/plugin' . $this->asset_suffix . '.css', MKDO_BINDER_ROOT );
 			$plugin_css_path = dirname( MKDO_BINDER_ROOT ) . '/assets/css/plugin' . $this->asset_suffix . '.css';
@@ -122,6 +133,7 @@ class Controller_Assets {
 			array(
 				'jquery',
 				MKDO_BINDER_PREFIX . '-vendor-select2',
+				'shortcode-ui',
 			)
 		);
 
@@ -185,6 +197,13 @@ class Controller_Assets {
 				$admin_enqueue_dependencies,
 				filemtime( $plugin_js_path ),
 				true
+			);
+			wp_localize_script(
+				MKDO_BINDER_PREFIX . '-plugin-admin-js',
+				'binder_admin',
+				array(
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
+				)
 			);
 		}
 	}

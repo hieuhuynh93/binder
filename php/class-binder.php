@@ -466,6 +466,7 @@ class Binder {
 		} else {
 			foreach ( $history as $document ) {
 				$binder_document = new Binder_Document();
+				$binder_document->binder_id   = $document->binder_id;
 				$binder_document->upload_date = $document->upload_date;
 				$binder_document->post_id     = $document->post_id;
 				$binder_document->user_id     = $document->user_id;

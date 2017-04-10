@@ -96,6 +96,15 @@ class Controller_Main {
 	private $post_binder;
 
 	/**
+	 * The Binder Document Shortcode.
+	 *
+	 * @var 	object
+	 * @access	private
+	 * @since	0.1.0
+	 */
+	private $shortcode_binder_document;
+
+	/**
 	 * Taxonomy for Document Category
 	 *
 	 * @var object
@@ -128,6 +137,7 @@ class Controller_Main {
 	 * @param Meta_Binder_Version_Control $meta_binder_version_control The Binder Version Control Meta.
 	 * @param Notices_Admin               $notices_admin               Notices on the admin screens.
 	 * @param Post_Binder                 $post_binder                 The Binder Document Post Type.
+	 * @param Shortcode_Binder_Document   $shortcode_binder_document   The Binder Document Shortcode.
 	 * @param Taxonomy_Binder_Category    $taxonomy_binder_category    Taxonomy for Document Category.
 	 * @param Taxonomy_Binder_Tag         $taxonomy_binder_tag         Taxonomy for Document Tag.
 	 * @param Taxonomy_Binder_Type        $taxonomy_binder_type        Taxonomy for Document Type.
@@ -144,6 +154,7 @@ class Controller_Main {
 		Meta_Binder_Version_Control $meta_binder_version_control,
 		Notices_Admin $notices_admin,
 		Post_Binder $post_binder,
+		Shortcode_Binder_Document $shortcode_binder_document,
 		Taxonomy_Binder_Category $taxonomy_binder_category,
 		Taxonomy_Binder_Tag $taxonomy_binder_tag,
 		Taxonomy_Binder_Type $taxonomy_binder_type
@@ -157,6 +168,7 @@ class Controller_Main {
 		$this->meta_binder_version_control = $meta_binder_version_control;
 		$this->notices_admin               = $notices_admin;
 		$this->post_binder                 = $post_binder;
+		$this->shortcode_binder_document   = $shortcode_binder_document;
 		$this->taxonomy_binder_category    = $taxonomy_binder_category;
 		$this->taxonomy_binder_tag         = $taxonomy_binder_tag;
 		$this->taxonomy_binder_type        = $taxonomy_binder_type;
@@ -183,6 +195,7 @@ class Controller_Main {
 		$this->meta_binder_version_control->run();
 		$this->notices_admin->run();
 		$this->post_binder->run();
+		$this->shortcode_binder_document->run();
 		$this->taxonomy_binder_category->run();
 		$this->taxonomy_binder_tag->run();
 		$this->taxonomy_binder_type->run();

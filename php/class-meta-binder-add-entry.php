@@ -255,7 +255,7 @@ class Meta_Binder_Add_Entry {
 
 			// Get the description.
 			if ( isset( $_POST[ MKDO_BINDER_PREFIX . '_description' ] ) ) {
-				$description = esc_html( $_POST[ MKDO_BINDER_PREFIX . '_description' ] );
+				$description = esc_textarea( $_POST[ MKDO_BINDER_PREFIX . '_description' ] );
 			}
 
 			// Get the draft status.
@@ -265,7 +265,7 @@ class Meta_Binder_Add_Entry {
 
 			// Get the version.
 			if ( isset( $_POST[ MKDO_BINDER_PREFIX . '_version' ] ) ) {
-				$current_version = esc_html( $_POST[ MKDO_BINDER_PREFIX . '_version' ] );
+				$current_version = sanitize_text_field( $_POST[ MKDO_BINDER_PREFIX . '_version' ] );
 			}
 
 			// If the folder is empty, set it.
@@ -359,9 +359,9 @@ class Meta_Binder_Add_Entry {
 				$document->user_id     = get_current_user_id();
 				$document->type        = $type;
 				$document->status      = $status;
-				$document->version     = $current_version;
+				$document->version     = esc_html( $current_version );
 				$document->name        = $original_name;
-				$document->description = $description;
+				$document->description = wp_kses_post( $description );
 				$document->folder      = $folder;
 				$document->file        = $file_name;
 				$document->size        = $size;
@@ -401,17 +401,17 @@ class Meta_Binder_Add_Entry {
 	    }
 
 		// Other save actions.
-		do_action( MKDO_BINDER_PREFIX . '_after_add_entry_save' );
+		do_action( MKDO_BINDER_PREFIX . '_after_add_entry_save', $post_id );
 
 		// Support for comments.
 		if ( isset( $_POST[ MKDO_BINDER_PREFIX . '_entry_type' ] ) && 'comment' === $_POST[ MKDO_BINDER_PREFIX . '_entry_type' ] && isset( $_POST[ MKDO_BINDER_PREFIX . '_description' ] ) && ! empty( $_POST[ MKDO_BINDER_PREFIX . '_description' ] ) ) {
-			$description = esc_html( $_POST[ MKDO_BINDER_PREFIX . '_description' ] );
+			$description = esc_textarea( $_POST[ MKDO_BINDER_PREFIX . '_description' ] );
 			$binder      = new Binder();
 			$document    = new Binder_Document();
 			$version     = $binder->get_latest_version_by_post_id( $post_id );
 
 			if ( isset( $_POST[ MKDO_BINDER_PREFIX . '_version' ] ) ) {
-				$version = esc_html( $_POST[ MKDO_BINDER_PREFIX . '_version' ] );
+				$version = sanitize_text_field( $_POST[ MKDO_BINDER_PREFIX . '_version' ] );
 			}
 
 			$document->post_id     = $post_id;
@@ -419,9 +419,9 @@ class Meta_Binder_Add_Entry {
 			$document->user_id     = get_current_user_id();
 			$document->type        = 'comment';
 			$document->status      = 'comment';
-			$document->version     = $version;
+			$document->version     = esc_html( $version );
 			$document->name        = '';
-			$document->description = $description;
+			$document->description = wp_kses_post( $description );
 			$document->folder      = '';
 			$document->file        = '';
 			$document->size        = '';

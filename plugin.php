@@ -45,6 +45,7 @@ require_once 'php/class-meta-binder-document-type.php';
 require_once 'php/class-meta-binder-version-control.php';
 require_once 'php/class-notices-admin.php';
 require_once 'php/class-post-binder.php';
+require_once 'php/class-shortcode-binder-document.php';
 require_once 'php/class-taxonomy-binder-category.php';
 require_once 'php/class-taxonomy-binder-tag.php';
 require_once 'php/class-taxonomy-binder-type.php';
@@ -67,6 +68,7 @@ use mkdo\binder\Meta_Binder_Document_Type;
 use mkdo\binder\Meta_Binder_Version_Control;
 use mkdo\binder\Notices_Admin;
 use mkdo\binder\Post_Binder;
+use mkdo\binder\Shortcode_Binder_Document;
 use mkdo\binder\Taxonomy_Binder_Category;
 use mkdo\binder\Taxonomy_Binder_Tag;
 use mkdo\binder\Taxonomy_Binder_Type;
@@ -81,6 +83,7 @@ $meta_binder_document_type   = new Meta_Binder_Document_Type();
 $meta_binder_version_control = new Meta_Binder_Version_Control();
 $notices_admin  	         = new Notices_Admin();
 $post_binder  	             = new Post_Binder();
+$shortcode_binder_document   = new Shortcode_Binder_Document();
 $taxonomy_binder_category    = new Taxonomy_Binder_Category();
 $taxonomy_binder_tag         = new Taxonomy_Binder_Tag();
 $taxonomy_binder_type        = new Taxonomy_Binder_Type();
@@ -94,6 +97,7 @@ $controller_main             = new Controller_Main(
 	$meta_binder_version_control,
 	$notices_admin,
 	$post_binder,
+	$shortcode_binder_document,
 	$taxonomy_binder_category,
 	$taxonomy_binder_tag,
 	$taxonomy_binder_type
