@@ -248,7 +248,7 @@ class Meta_Binder_Version_Control {
 					$document_post->post_content = apply_filters( 'the_content', $output );
 					remove_action( 'save_post', array( $this, 'save_meta' ), 9998 );
 					wp_update_post( $document_post );
-					add_action( 'save_post', array( $this, 'save_meta' ), 9999 );
+					add_action( 'save_post', array( $this, 'save_meta' ), 9998 );
 				}
 
 				// TODO: Hooked in behaviour from GFS project, to be realised.

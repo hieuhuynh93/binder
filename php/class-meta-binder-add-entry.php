@@ -221,7 +221,7 @@ class Meta_Binder_Add_Entry {
 	 */
 	public function save_meta( $post_id ) {
 
-		global $wp_roles, $wpdb, $_wp_additional_image_sizes;
+		global $wp_roles, $wpdb;
 
 		// If it is just a revision don't worry about it.
 		if ( wp_is_post_revision( $post_id ) ) {
@@ -321,19 +321,34 @@ class Meta_Binder_Add_Entry {
 				// Generate an image for the document.
 				$image_file = '';
 				$image      = wp_get_image_editor( $path . '/' . $file_name, array( 'mime_type' => $uploaded_type ) );
+				$images     = array();
 
 				if ( ! is_wp_error( $image ) ) {
 
+					// Add all existing sizes to the array.
+					$sizes = Helper::get_image_sizes();
+					if ( ! empty( $sizes ) ) {
+						foreach ( $sizes as $key => $size ) {
+							$image = wp_get_image_editor( $path . '/' . $file_name, array( 'mime_type' => $uploaded_type ) );
+							$image->resize( $size['width'], $size['height'], $size['crop'] );
+							$image_file = $image->generate_filename( '', $path . '/', 'jpg' );
+							$image->save( $image_file, 'image/jpeg' );
+							$image_file        = str_replace( $path, '', $image_file );
+							$image_file        = trim( $image_file, '/' );
+							$images[ $key ] = $image_file;
+						}
+					}
+
+					// Lets get the default size, and push this into the array.
 					$image->resize( 2048, 4096, false );
 					$image_file = $image->generate_filename( '', $path . '/', 'jpg' );
 					$image->save( $image_file, 'image/jpeg' );
+					$image_file        = str_replace( $path, '', $image_file );
+					$image_file        = trim( $image_file, '/' );
+					$images['default'] = $image_file;
 
-					// TODO: Hooked in behaviour from GFS project, to be realised.
-					//
-					// do_action( MKDO_BINDER_PREFIX . '_generate_thumbnails', $path, $file_name, $uploaded_type, $_wp_additional_image_sizes, $post_id );
-					//
-					// $image_thumbs = array();
-					// $image_thumbs = apply_filters( MKDO_BINDER_PREFIX . '_image_thumbs', $image_thumbs, $post_id );
+					// Add custom sizes into the array.
+					$images = apply_filters( MKDO_BINDER_PREFIX . '_custom_image_sizes', $images, $image );
 				}
 
 				$document->post_id     = $post_id;
@@ -347,7 +362,7 @@ class Meta_Binder_Add_Entry {
 				$document->folder      = $folder;
 				$document->file        = $file_name;
 				$document->size        = $size;
-				$document->thumb       = $image_file;
+				$document->thumb       = serialize( $images );
 				$document->mime_type   = $uploaded_type;
 
 				// Get the text from the file.
@@ -374,12 +389,6 @@ class Meta_Binder_Add_Entry {
 						wp_update_post( $document_post );
 						add_action( 'save_post', array( $this, 'save_meta' ), 9999 );
 					}
-
-					// TODO: Hooked in behaviour from GFS project, to be realised.
-					//
-					// foreach ( $image_thumbs as $size => $image_thumb_file ) {
-					// 	update_post_meta( $post_id, MKDO_BINDER_PREFIX . '_thumb-' . $size, $image_thumb_file );
-					// }
 
 					// Update the type.
 					wp_set_object_terms( $post_id, array( $type ), 'binder_type', false );

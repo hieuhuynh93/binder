@@ -23,6 +23,7 @@ namespace mkdo\binder;
 require_once __DIR__ . '/../traits/trait-get-icons.php';
 require_once __DIR__ . '/../traits/trait-create-guid.php';
 require_once __DIR__ . '/../traits/trait-format-bytes.php';
+require_once __DIR__ . '/../traits/trait-get-image-sizes.php';
 require_once __DIR__ . '/../traits/trait-page-slug-from-url.php';
 require_once __DIR__ . '/../traits/trait-render-view.php';
 
@@ -52,6 +53,7 @@ class Helper {
 	use Helper_Get_Icons;
 	use Helper_Create_GUID;
 	use Helper_Format_Bytes;
+	use Helper_Get_Image_Sizes;
 	use Helper_Page_Slug_From_URL;
 	use Helper_Render_View;
 }
