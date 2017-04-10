@@ -52,6 +52,8 @@ class Shortcode_Binder_Document_List {
 			array(
 				'posts_per_page' => -1, // Bad practice, but we need to find any document.
 				'post_type'      => 'binder',
+				'orderby'        => 'title',
+				'order'          => 'ASC',
 			)
 		);
 
@@ -104,7 +106,6 @@ class Shortcode_Binder_Document_List {
 				'multiple'     => true,
 				'meta'         => array(
 					'multiple'         => 'multiple',
-					// 'style'            => 'width:100%;',
 					'placeholder'      => esc_html__( 'Select Documents', 'binder' ),
 					'data-placeholder' => esc_html__( 'Select Documents', 'binder' ),
 					'data-js-select2'  => 'select2',
@@ -119,7 +120,6 @@ class Shortcode_Binder_Document_List {
 				'multiple'     => true,
 				'meta'         => array(
 					'multiple'         => 'multiple',
-					// 'style'            => 'width:100%;',
 					'placeholder'      => esc_html__( 'Select Tags', 'binder' ),
 					'data-placeholder' => esc_html__( 'Select Tags', 'binder' ),
 					'data-js-select2'  => 'select2',
@@ -134,7 +134,6 @@ class Shortcode_Binder_Document_List {
 				'multiple'     => true,
 				'meta'         => array(
 					'multiple'         => 'multiple',
-					// 'style'            => 'width:100%;',
 					'placeholder'      => esc_html__( 'Select Categories', 'binder' ),
 					'data-placeholder' => esc_html__( 'Select Categories', 'binder' ),
 					'data-js-select2'  => 'select2',
@@ -187,15 +186,15 @@ class Shortcode_Binder_Document_List {
 					'true',
 				),
 			),
-			array(
-				'label'        => esc_html__( 'Show Image (card only)', 'binder' ),
-				'description'  => esc_html__( 'Show the image when presenting the document list as a card list or grid.', 'binder' ),
-				'attr'         => 'image',
-				'type'         => 'checkbox',
-				'options'      => array(
-					'true',
-				),
-			),
+			// array(
+			// 	'label'        => esc_html__( 'Show Image (card only)', 'binder' ),
+			// 	'description'  => esc_html__( 'Show the image when presenting the document list as a card list or grid.', 'binder' ),
+			// 	'attr'         => 'image',
+			// 	'type'         => 'checkbox',
+			// 	'options'      => array(
+			// 		'true',
+			// 	),
+			// ),
 			// array(
 			// 	'label'        => esc_html__( 'Show document reader text', 'binder' ),
 			// 	'description'  => esc_html__( 'Show the paragraph explaining how to access the document reader (defined in the plugin settings).', 'binder' ),
@@ -261,7 +260,7 @@ class Shortcode_Binder_Document_List {
 				'label'         => esc_html__( 'Document List', 'binder' ),
 				'description'   => esc_html__( 'Use the options below to generate a list of documents.', 'binder' ),
 				'listItemImage' => 'dashicons-list-view',
-				'post_type'     => apply_filters( MKDO_BINDER_PREFIX . '_shortcode_document_supported_post_types', get_post_types() ),
+				'post_type'     => apply_filters( MKDO_BINDER_PREFIX . '_shortcode_document_list_supported_post_types', get_post_types() ),
 				'attrs'         => $fields,
 			)
 		);
@@ -307,7 +306,7 @@ class Shortcode_Binder_Document_List {
 			$search_posts = get_posts(
 				array(
 					'post_type'        => 'binder',
-					'posts_per_page'   => 100,
+					'posts_per_page'   => -1,
 					's'                => esc_attr( $attr['search_terms'] ),
 				)
 			);
@@ -329,8 +328,8 @@ class Shortcode_Binder_Document_List {
 		}
 
 		if ( ! empty( $attr['tags'] ) ) {
-			$term_ids = esc_attr( $attr['tags'] );
-			$term_ids = explode( ',', $term_ids );
+			$term_ids  = esc_attr( $attr['tags'] );
+			$term_ids  = explode( ',', $term_ids );
 			$tag_posts = get_posts(
 				array(
 					'post_type'      => 'binder',
@@ -366,15 +365,15 @@ class Shortcode_Binder_Document_List {
 			$document_posts[] = $category_posts;
 		}
 
+		// Filter for other list options.
 		$document_posts = apply_filters( MKDO_BINDER_PREFIX . '_shortcode_document_list_include_posts', $document_posts, $attr );
-
 
 		if ( 'combined' === $attr['combined'] ) {
 			// Merge all the posts into one array.
 			$document_posts = call_user_func_array( 'array_merge', $document_posts );
 			$document_posts = array_unique( $document_posts, SORT_REGULAR );
 		} else {
-			// Sort Posts that apprear in each array
+			// Sort Posts that apprear in each array.
 			$master     = array();
 			$master_set = false;
 			foreach ( $document_posts as $key => $array ) {
@@ -392,13 +391,13 @@ class Shortcode_Binder_Document_List {
 
 		ob_start();
 
+		// Render the default view type.
 		if ( 'list' === $attr['list_type'] ) {
 			include Helper::render_view( 'view-document-list' );
-		} elseif ( 'card-list' === $attr['list_type'] ) {
-			include Helper::render_view( 'view-document-list-card-list' );
-		} elseif ( 'card-grid' === $attr['list_type'] ) {
-			include Helper::render_view( 'view-document-list-card-grid' );
 		}
+
+		// Render additional view types.
+		do_action( MKDO_BINDER_PREFIX . '_shortcode_binder_document_list_render_views' );
 
 		return ob_get_clean();
 	}

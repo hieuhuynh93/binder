@@ -59,6 +59,8 @@ class Shortcode_Binder_Document {
 			array(
 				'posts_per_page' => -1, // Bad practice, but we need to find any document.
 				'post_type'      => 'binder',
+				'orderby'        => 'title',
+				'order'          => 'ASC',
 			)
 		);
 
@@ -274,7 +276,7 @@ class Shortcode_Binder_Document {
 		}
 
 		// Render additional view types.
-		do_action( MKDO_BINDER_PREFIX . '_shortcode_binder_render_views' );
+		do_action( MKDO_BINDER_PREFIX . '_shortcode_binder_document_render_views' );
 
 		return ob_get_clean();
 	}
