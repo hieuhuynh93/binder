@@ -39,12 +39,13 @@ class Taxonomy_Binder_Type {
 	 * Do Work
 	 */
 	public function run() {
-		add_action( 'init', array( $this, 'register_taxonomy' ) );
+		add_action( 'init', array( $this, 'register_taxonomy' ), 0 );
 		add_action( 'binder_type_add_form_fields', array( $this, 'add_form_fields' ), 10 );
 		add_action( 'binder_type_edit_form_fields', array( $this, 'edit_form_fields' ), 10, 2 );
 		add_action( 'edited_binder_type', array( $this, 'save_data' ), 10, 2 );
 		add_action( 'created_binder_type', array( $this, 'save_data' ), 10, 2 );
 		add_action( 'admin_menu', array( $this, 'remove_meta_boxes' ) );
+		add_action( 'init', array( $this, 'populate_taxonomy' ), 9999 );
 	}
 
 	/**
@@ -157,5 +158,61 @@ class Taxonomy_Binder_Type {
 	 */
 	public function remove_meta_boxes() {
 		remove_meta_box( 'binder_typediv' , 'binder' , 'side' );
+	}
+
+	/**
+	 * Populate the taxonomy.
+	 *
+	 * @since    1.0.0
+	 */
+	public function populate_taxonomy() {
+
+		$taxonomy_name = 'binder_type';
+
+		$terms                                   = array();
+		$terms['Portable Document Format (pdf)'] = array( 'slug' => 'pdf',  'icon' => 'file-pdf-o' );
+		$terms['Microsoft Word (docx)']          = array( 'slug' => 'docx', 'icon' => 'file-word-o' );
+		$terms['Microsoft Word (doc)']           = array( 'slug' => 'doc',  'icon' => 'file-word-o' );
+		$terms['Microsoft PowerPoint (pptx)']    = array( 'slug' => 'pptx', 'icon' => 'file-powerpoint-o' );
+		$terms['Microsoft PowerPoint (ppt)']     = array( 'slug' => 'ppt',  'icon' => 'file-powerpoint-o' );
+		$terms['Microsoft Excel (xlsx)']         = array( 'slug' => 'xlsx', 'icon' => 'file-excel-o' );
+		$terms['Microsoft Excel (xls)']          = array( 'slug' => 'xls',  'icon' => 'file-excel-o' );
+		$terms['Rich Text Format (rtf)']         = array( 'slug' => 'rtf',  'icon' => 'file-text-o' );
+		$terms['Comma Separated Values (csv)']   = array( 'slug' => 'csv',  'icon' => 'file-code-o' );
+		$terms['OpenDocument Text (odt)']        = array( 'slug' => 'odt',  'icon' => 'file-text-o' );
+
+		foreach ( $terms as $term => $properties ) {
+
+			$parent_id   = 0;
+			$slug        = ( isset( $properties['slug'] ) ) ? $properties['slug'] : false;
+			$parent      = ( isset( $properties['parent'] ) ) ? esc_attr( $properties['parent'] ) : 0;
+			$description = ( isset( $properties['description'] ) ) ? esc_attr( $properties['description'] ) : false;
+
+			if ( 0 !== $parent ) {
+
+				$parent_object = get_term_by( 'name', $parent, $taxonomy_name  );
+
+				if ( is_object( $parent_object ) ) {
+					$parent_id = $parent_object->term_id;
+				}
+			}
+
+			if ( ! term_exists( $term, $taxonomy_name ) ) {
+
+				$result = wp_insert_term(
+					$term,
+					$taxonomy_name,
+					array(
+						'slug'        => $slug,
+						'parent'      => $parent_id,
+						'description' => $description,
+					)
+				);
+
+				if ( is_array( $result ) && $result['term_id'] && isset( $properties['icon'] ) ) {
+					update_term_meta( $result['term_id'], MKDO_BINDER_PREFIX . '_type_icon', $properties['icon'] );
+				}
+			}
+		}
 	}
 }

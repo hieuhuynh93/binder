@@ -25,6 +25,8 @@
 #binder_version_control table {
 	border-collapse: collapse;
 	width: 100%;
+	margin-left:0px;
+	margin-right: 0px;
 }
 
 #binder_version_control table td,
@@ -62,30 +64,6 @@
 #binder_version_control table input[type="file"],
 #binder_version_control table input[type="text"],
 #binder_version_control table textarea {
-	width: 100%;
-}
-
-#binder_version_control table tr th.binder-history__column--preview {
-	width: 10%;
-}
-
-#binder_version_control table tr th.binder-history__column--status {
-	width: 10%;
-}
-
-#binder_version_control table tr th.binder-history__column--version {
-	width: 10%;
-}
-
-#binder_version_control table tr th.binder-history__column--comment {
-	width: 50%;
-}
-
-#binder_version_control table tr th.binder-history__column--file {
-	width: 20%;
-}
-
-#binder_version_control table img {
 	width: 100%;
 }
 
@@ -127,13 +105,7 @@
 		margin-bottom: 1em;
 	}
 
-	#binder_version_control table tr td.binder-history__column--preview,
-	#binder_version_control table tr td.binder-history__column--status,
-	#binder_version_control table tr td.binder-history__column--version,
-	#binder_version_control table tr td.binder-history__column--comment,
-	#binder_version_control table tr td.binder-history__column--remove,
-	#binder_version_control table tr td.binder-history__column--file {
-		width: 100%;
+	#binder_version_control table tr td {
 		box-sizing : border-box;
 	}
 
@@ -152,7 +124,49 @@
 	z-index: 160000 !important;
 }
 
-// Prevent z-index modifications to CMB2 select2 instances.
-.cmb-td .select2-container {
-	z-index: inherit !important;	
+/**
+ * Tablesorter
+ */
+#binder_version_control {
+	table.binder-history thead tr .header {
+		background-image: url( ../img/bg.gif );
+		background-repeat: no-repeat;
+		background-position: center right;
+		cursor: pointer;
+		padding-right: 20px;
+	}
+	table.binder-history thead tr .header.headerSortUp {
+		background-image: url( ../img/asc.gif );
+	}
+	table.binder-history thead tr .header.headerSortDown {
+		background-image: url( ../img/desc.gif );
+	}
+}
+
+/**
+ * Add Entry Screen
+ */
+#binder_add_entry {
+	.meta-box__label {
+		font-weight: bold;
+	}
+	// .meta-box__item.meta-box__item--file {
+	// 	width: 100%;
+	// }
+	// .meta-box__item.meta-box__item--file input {
+	//
+	// 	width: 100%;
+	// 	display: block;
+	// 	padding: 1em 2em;
+	// 	color: #555d66;
+	// 	background: #f5f5f5;
+	// 	border: 1px solid #ccc;
+	// 	// border-radius: .4em;
+	// 	transition: background .3s;
+	//
+	// 	&:hover {
+	// 		cursor: pointer;
+	// 		background: #fff;
+	// 	}
+	// }
 }

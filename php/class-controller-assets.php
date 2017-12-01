@@ -47,7 +47,7 @@ class Controller_Assets {
 
 		// Check if WordPress is in debug mode, if it is then we do not want to
 		// load the minified assets.
-		if ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) {
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			$this->debug_mode   = true;
 			$this->asset_suffix = '';
 		}
@@ -72,7 +72,7 @@ class Controller_Assets {
 	public function public_enqueue_scripts() {
 
 		$do_public_enqueue                 = apply_filters( MKDO_BINDER_PREFIX . '_do_public_enqueue', true );
-		$do_public_css_enqueue             = apply_filters( MKDO_BINDER_PREFIX . '_do_public_css_enqueue', false );
+		$do_public_css_enqueue             = apply_filters( MKDO_BINDER_PREFIX . '_do_public_css_enqueue', true );
 		$do_public_js_enqueue              = apply_filters( MKDO_BINDER_PREFIX . '_do_public_js_enqueue', false );
 		$do_vendor_font_awsome_css_enqueue = apply_filters( MKDO_BINDER_PREFIX . '_do_vendor_font_awsome_css_enqueue', true );
 
@@ -121,7 +121,7 @@ class Controller_Assets {
 
 		$do_admin_enqueue                        = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_enqueue', true );
 		$do_admin_css_enqueue                    = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_css_enqueue', true );
-		$do_admin_editor_css_enqueue             = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_editor_css_enqueue', false );
+		$do_admin_editor_css_enqueue             = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_editor_css_enqueue', true );
 		$do_admin_js_enqueue                     = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_js_enqueue', true );
 		$do_admin_vendor_font_awsome_css_enqueue = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_vendor_font_awsome_css_enqueue', true );
 		$do_admin_vendor_select2_css_enqueue     = apply_filters( MKDO_BINDER_PREFIX . '_do_admin_vendor_select2_css_enqueue', true );
@@ -215,7 +215,7 @@ class Controller_Assets {
 	 */
 	public function customize_preview_init() {
 
-		$do_customizer_enqueue = apply_filters( MKDO_BINDER_PREFIX . '_do_customizer_enqueue', true );
+		$do_customizer_enqueue = apply_filters( MKDO_BINDER_PREFIX . '_do_customizer_enqueue', false );
 
 		if ( $do_customizer_enqueue ) {
 			$customizer_js_url  = plugins_url( 'assets/js/customizer' . $this->asset_suffix . '.js', MKDO_BINDER_ROOT );

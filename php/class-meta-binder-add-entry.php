@@ -59,9 +59,8 @@ class Meta_Binder_Add_Entry {
 
 		global $post;
 
-		$binder          = new Binder();
-		$document        = $binder->get_latest_document_by_post_id( $post->ID );
-		$current_version = $binder->get_latest_version_by_post_id( $post->ID );
+		$document        = Binder::get_latest_document_by_post_id( $post->ID );
+		$current_version = Binder::get_latest_version_by_post_id( $post->ID );
 		$current_version = explode( '.', $current_version );
 		$count_version   = count( $current_version );
 		if ( is_numeric( $current_version[ $count_version - 1  ] ) ) {
@@ -70,7 +69,7 @@ class Meta_Binder_Add_Entry {
 		}
 
 		// Get binder history.
-		$history = $binder->get_history_by_post_id( $post->ID );
+		$history = Binder::get_history_by_post_id( $post->ID );
 
 		// Get the Type of Entry.
 		$value = get_post_meta( $post->ID, esc_attr( MKDO_BINDER_PREFIX ) . '_entry_type', true );
@@ -91,7 +90,7 @@ class Meta_Binder_Add_Entry {
 			<div class="meta-box__region meta-box__region--entry-select">
 				<div class="meta-box__item meta-box__item--entry-select" style="display:none;">
 					<p>
-						<label>
+						<label class="meta-box__label">
 							<?php esc_html_e( 'Type of Entry', 'binder' );?>
 						</label>
 					</p>
@@ -121,7 +120,7 @@ class Meta_Binder_Add_Entry {
 			<div class="meta-box__region meta-box__region--add-file">
 				<p>
 					<span class="meta-box__item meta-box__item--version meta-box__item--version-select" style="display:none;">
-						<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version">
+						<label class="meta-box__label" for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version">
 							<?php esc_html_e( 'Version', 'binder' );?>
 						</label>
 						<br/>
@@ -148,7 +147,7 @@ class Meta_Binder_Add_Entry {
 						</select>
 					</span>
 					<span class="meta-box__item meta-box__item--version">
-						<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version">
+						<label class="meta-box__label" for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version">
 							<?php esc_html_e( 'Version', 'binder' );?>
 						</label>
 						<br/>
@@ -169,7 +168,7 @@ class Meta_Binder_Add_Entry {
 				</p>
 				<div class="meta-box__item meta-box__item--comment">
 					<p>
-						<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_description">
+						<label class="meta-box__label" for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_description">
 							<?php esc_html_e( 'Comment', 'binder' );?>
 						</label>
 						<br/>
@@ -193,8 +192,8 @@ class Meta_Binder_Add_Entry {
 					<p class="description"><?php esc_html_e( 'Add a comment to this entry.', 'binder' );?></p>
 				</div>
 				<p class="meta-box__item meta-box__item--file">
-					<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_file_upload">
-						<?php esc_html_e( 'Upload File', 'binder' );?>
+					<label class="meta-box__label" for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_file_upload">
+						<?php esc_html_e( 'Attach File', 'binder' );?>
 					</label>
 					<br/>
 				    <input
@@ -243,11 +242,17 @@ class Meta_Binder_Add_Entry {
 			return $post_id;
 		}
 
+		// If the type is not set, lets set it.
+		$terms = wp_get_object_terms( $post_id, 'binder_type' );
+		if ( empty( $terms ) ) {
+			$document = Binder::get_latest_document_by_post_id( $post_id );
+			wp_set_object_terms( $post_id, array( $document->type ), 'binder_type', false );
+		}
+
 		// Make sure the file array isn't empty.
 	    if ( ! empty( $_FILES[ MKDO_BINDER_PREFIX . '_file_upload' ]['name'] ) ) {
 
-			$binder          = new Binder();
-			$document        = $binder->get_latest_document_by_post_id( $post_id );
+			$document        = Binder::get_latest_document_by_post_id( $post_id );
 			$description     = '';
 			$status          = 'latest';
 			$current_version = '0.0.1';
@@ -380,8 +385,7 @@ class Meta_Binder_Add_Entry {
 				}
 
 				// Update the post content.
-				$binder  = new Binder();
-				$history = $binder->get_history_by_post_id( $post_id );
+				$history = Binder::get_history_by_post_id( $post_id );
 				if ( 'draft' !== $status || 1 === count( $history ) ) {
 
 					// Update the content.
@@ -396,7 +400,7 @@ class Meta_Binder_Add_Entry {
 					// Update the type.
 					wp_set_object_terms( $post_id, array( $type ), 'binder_type', false );
 				}
-				$binder->add_entry( $document, $post_id );
+				Binder::add_entry( $document, $post_id );
 	        }
 	    }
 
@@ -406,9 +410,8 @@ class Meta_Binder_Add_Entry {
 		// Support for comments.
 		if ( isset( $_POST[ MKDO_BINDER_PREFIX . '_entry_type' ] ) && 'comment' === $_POST[ MKDO_BINDER_PREFIX . '_entry_type' ] && isset( $_POST[ MKDO_BINDER_PREFIX . '_description' ] ) && ! empty( $_POST[ MKDO_BINDER_PREFIX . '_description' ] ) ) {
 			$description = esc_textarea( $_POST[ MKDO_BINDER_PREFIX . '_description' ] );
-			$binder      = new Binder();
 			$document    = new Binder_Document();
-			$version     = $binder->get_latest_version_by_post_id( $post_id );
+			$version     = Binder::get_latest_version_by_post_id( $post_id );
 
 			if ( isset( $_POST[ MKDO_BINDER_PREFIX . '_version' ] ) ) {
 				$version = sanitize_text_field( $_POST[ MKDO_BINDER_PREFIX . '_version' ] );
@@ -428,7 +431,11 @@ class Meta_Binder_Add_Entry {
 			$document->thumb       = '';
 			$document->mime_type   = '';
 
-			$binder->add_entry( $document, $post_id );
+			// Add the comment.
+			Binder::add_entry( $document, $post_id );
+
+			// Stop the item being added again.
+			$_POST[ MKDO_BINDER_PREFIX . '_entry_type' ] = null;
 		}
 	}
 }

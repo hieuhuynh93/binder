@@ -44,10 +44,9 @@ if ( empty( $document ) ) {
 	return;
 }
 
-$binder   = new \mkdo\binder\Binder();
-$document = $binder->get_latest_document_by_post_id( $document_post->ID );
+$document = \mkdo\binder\Binder::get_latest_document_by_post_id( $document_post->ID );
 if ( ! empty( $version ) ) {
-	$document = $binder->get_document_by_version( $document_post->ID, $version );
+	$document = \mkdo\binder\Binder::get_document_by_version( $document_post->ID, $version );
 }
 $name     = $document_post->post_title;
 $link     = get_the_permalink( $document_post->ID );
@@ -66,7 +65,19 @@ if ( ! empty( $term ) ) {
 	$icon = get_term_meta( $term->term_id, MKDO_BINDER_PREFIX . '_type_icon', true );
 }
 
+// Term fallback.
+if ( empty( $term ) ) {
+	$type = $document->type;
+	$term = get_term_by( 'slug', $type, 'binder_type' );
+	if ( ! empty( $term ) ) {
+		$term = $term;
+		$type = $term->name;
+		$icon = get_term_meta( $term->term_id, MKDO_BINDER_PREFIX . '_type_icon', true );
+	}
+}
+
 $document_meta = array(
+	'post_id' => $document_post->ID,
 	'name'    => $name,
 	'link'    => $link,
 	'excerpt' => $excerpt,
@@ -117,8 +128,10 @@ if ( ! empty( $document_meta ) ) {
 	if ( 'latest' !== $version ) {
 		$query_string = '?v=' . $version;
 	}
+	$document_class = 'binder-link';
+	$document_class = apply_filters( MKDO_BINDER_PREFIX . '_document_link_class', $document_class, $document_meta['post_id'] );
 	?>
-	<a href="<?php echo esc_url( $document_meta['link'] . $query_string );?>">
+	<a href="<?php echo esc_url( $document_meta['link'] . $query_string );?>" class="c-binder-link | <?php echo esc_attr( $document_class );?>">
 		<?php
 		if ( ! empty( $alternative_text ) ) {
 			echo esc_html( $alternative_text );

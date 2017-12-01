@@ -133,6 +133,7 @@ module.exports = function(grunt) {
 			// for ADMIN enqueues.
 			// -------------------------------------
 			concatAdmin: [
+				'tools/bower_components/tablesorter/jquery.tablesorter.min.js',
 				'<%= siteInfo.assets_path_raw %>/<%= siteInfo.js_dir %>/plugin-admin.js'
 			],
 

@@ -1,0 +1,27 @@
+/* ==========================================================================
+   #LOGIN-FORMS
+   ========================================================================== */
+
+/**
+ * 1. Add the default spacing to seperate the elements.
+ * 2. Make the inputs full width.
+ */
+
+.c-login-form__input {
+	margin-bottom: $inuit-global-spacing-unit; /* [1] */
+
+	input[type=text],
+	input[type=email],
+	input[type=password] {
+		width: 100%; /* [2] */
+	}
+}
+
+.c-login-form__navigation {
+	padding-left: 0px;
+	padding-right: 0px;
+
+	li:last-of-type {
+		float: right;
+	}
+}

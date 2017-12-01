@@ -10,10 +10,10 @@
  */
 
 /**
-* Variables
-*
-* The following variables can be used in this view.
-*/
+ * Variables
+ *
+ * The following variables can be used in this view.
+ */
 $attr = wp_parse_args(
 	(array) $attr,
 	array(
@@ -31,7 +31,6 @@ $attr = wp_parse_args(
 	)
 );
 
-$prefix                    = $this->prefix; // The meta prefix;
 $documents                 = $document_posts; // The main list of documents.
 $show_file_size            = 'true' === $attr['file_size'] ? true : false;
 $show_file_date            = 'true' === $attr['date'] ? true : false;
@@ -45,10 +44,9 @@ $sort_order                = esc_attr( $attr['sort_order'] ); // Can be: ascendi
 $document_list = array();
 
 foreach ( $documents as $document_post ) {
-	$binder   = new \mkdo\binder\Binder();
-	$document = $binder->get_latest_document_by_post_id( $document_post->ID );
+	$document = \mkdo\binder\Binder::get_latest_document_by_post_id( $document_post->ID );
 	if ( ! empty( $version ) ) {
-		$document = $binder->get_document_by_version( $document_post->ID, $version );
+		$document = \mkdo\binder\Binder::get_document_by_version( $document_post->ID, $version );
 	}
 	$name     = $document_post->post_title;
 	$link     = get_the_permalink( $document_post->ID );
@@ -67,9 +65,21 @@ foreach ( $documents as $document_post ) {
 		$icon = get_term_meta( $term->term_id, MKDO_BINDER_PREFIX . '_type_icon', true );
 	}
 
+	// Term fallback.
+	if ( empty( $term ) ) {
+		$type = $document->type;
+		$term = get_term_by( 'slug', $type, 'binder_type' );
+		if ( ! empty( $term ) ) {
+			$term = $term;
+			$type = $term->name;
+			$icon = get_term_meta( $term->term_id, MKDO_BINDER_PREFIX . '_type_icon', true );
+		}
+	}
+
 	// If there is no type, there probably hasn't been a document attached.
 	if ( ! empty( $type ) ) {
 		$document_list[] = array(
+			'post_id' => $document_post->ID,
 			'name'    => $name,
 			'link'    => $link,
 			'excerpt' => $excerpt,
@@ -104,9 +114,11 @@ if ( 'ascending' === $sort_order ) {
  */
 if ( ! empty( $document_list ) ) {
 	?>
-	<ul>
+	<ul class="c-binder-document-list">
 		<?php
 		foreach ( $document_list as $document ) {
+			$document_class = 'binder-link';
+			$document_class = apply_filters( MKDO_BINDER_PREFIX . '_document_link_class', $document_class, $document['post_id'] );
 			$meta      = '';
 			$date_meta = '';
 			if ( $show_file_date ) {
@@ -133,8 +145,8 @@ if ( ! empty( $document_list ) ) {
 				$meta = str_replace( ' )', ')', $meta );
 			}
 			?>
-			<li>
-				<a href="<?php echo esc_url( $document['link'] );?>">
+			<li class="c-binder-document-list__item">
+				<a href="<?php echo esc_url( $document['link'] );?>" class="<?php echo esc_attr( $document_class );?>">
 					<?php echo esc_html( $document['name'] );?>
 					<?php
 						echo wp_kses(

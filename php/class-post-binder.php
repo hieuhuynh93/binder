@@ -45,10 +45,10 @@ class Post_Binder {
 	public function register_post_type() {
 
 		$labels = array(
-			'name'                  => _x( 'Binder', 'Post Type General Name', 'binder' ),
+			'name'                  => _x( 'Document', 'Post Type General Name', 'binder' ),
 			'singular_name'         => _x( 'Document', 'Post Type Singular Name', 'binder' ),
-			'menu_name'             => __( 'Binder', 'binder' ),
-			'name_admin_bar'        => __( 'Binder', 'binder' ),
+			'menu_name'             => __( 'Documents', 'binder' ),
+			'name_admin_bar'        => __( 'Documents', 'binder' ),
 			'archives'              => __( 'Document Archives', 'binder' ),
 			'parent_item_colon'     => __( 'Parent Document:', 'binder' ),
 			'all_items'             => __( 'All Documents', 'binder' ),
@@ -72,7 +72,7 @@ class Post_Binder {
 			'filter_items_list'     => __( 'Filter Documents list', 'binder' ),
 		);
 		$args = array(
-			'label'               => __( 'Binder', 'binder' ),
+			'label'               => __( 'Document', 'binder' ),
 			'description'         => __( 'Custom Post Type for Binder Documents', 'binder' ),
 			'labels'              => $labels,
 			'supports'            => array(
@@ -93,12 +93,12 @@ class Post_Binder {
 			'show_ui'             => true,
 			'show_in_menu'        => true,
 			'menu_position'       => 10,
-			'menu_icon'           => 'dashicons-media-document',
+			'menu_icon'           => 'dashicons-book-alt',
 			'show_in_admin_bar'   => true,
 			'show_in_nav_menus'   => true,
 			'show_in_rest'        => false,
 			'can_export'          => true,
-			'has_archive'         => 'documents',
+			'has_archive'         => false,
 			'exclude_from_search' => false,
 			'publicly_queryable'  => true,
 			'capability_type'     => 'post',
@@ -132,10 +132,12 @@ class Post_Binder {
 	 */
 	public function post_type_link( $link, $post ) {
 
+		$permalink_support = get_option( MKDO_BINDER_PREFIX . '_permalink_support', false );
+
 		// Document
 		//
 		// Alter the permalink of the post type by changing the URL dynamically.
-		if ( $this->post_type === $post->post_type ) {
+		if ( $this->post_type === $post->post_type && $permalink_support ) {
 
 			// TODO:
 			// - Do check to see if document permalink supported
@@ -176,8 +178,7 @@ class Post_Binder {
 	 */
 	public function before_delete_post( $post_id ) {
 
-		$binder   = new Binder();
-		$document = $binder->get_latest_document_by_post_id( $post_id );
+		$document = Binder::get_latest_document_by_post_id( $post_id );
 		$folder   = $document->folder;
 
 		// Enabel the base to be filtered.
@@ -204,6 +205,6 @@ class Post_Binder {
 		}
 
 		// Remove the document.
-		$binder->delete_document_history_by_post_id( $post_id );
+		Binder::delete_document_history_by_post_id( $post_id );
 	}
 }

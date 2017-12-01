@@ -1,17 +1,19 @@
 {
-	"name": "binder",
-	"version": "0.1.0",
-	"authors": [
-		"mwtsn, davetgreen, mkdo"
-	],
-	"license": "MIT",
-	"private": true,
-	"ignore": [
-		"**/.*",
-		"node_modules",
-		"bower_components"
-	],
-	"dependencies": {
-		"modernizr": "latest"
-	}
+  "name": "binder",
+  "version": "0.1.0",
+  "authors": [
+    "mwtsn, davetgreen, mkdo"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "modernizr": "latest",
+	"tablesorter": "*",
+	"inuitcss": "^6.0.0-beta.4"
+  }
 }

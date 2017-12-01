@@ -24,6 +24,7 @@ class Load_Binder_Document {
 		// We need to hook in really late, as we want to do
 		// permission checks first.
 		add_action( 'wp', array( $this, 'routing' ), 9999 );
+		add_filter( 'user_has_cap', array( $this, 'user_has_cap' ),	0, 3 );
 	}
 
 	/**
@@ -34,21 +35,25 @@ class Load_Binder_Document {
 		global $wp_query, $post;
 
 		// Get the page slug.
-		$slug = Helper::page_slug_from_url();
+		$slug      = Helper::page_slug_from_url();
+		$file_name = '';
+		$path      = '';
 
 		// If we are:
 		//
 		// - Not on the admin screen
+		// - The post is a binder document
 		// - The current page is a 404
 		// - The document name contains a '.'
-		//
-		// TODO:
-		// - Need to factor in servers with no handling for document permalinks.
-		if (
-			! is_admin() &&
-			(
-				is_404() ||
-				'.' === substr( $slug, -1 )
+		if ( ! is_admin() && (
+				(
+					is_object( $post ) &&
+					'binder' === $post->post_type
+				) ||
+				(
+					is_404() ||
+					'.' === substr( $slug, -1 )
+				)
 			)
 		) {
 			// Split the documetn by its suffix.
@@ -84,21 +89,7 @@ class Load_Binder_Document {
 							! empty( $document->post_password ) &&
 							true === post_password_required( $document )
 						) {
-							// Redirect to the password page if the document is
-							// passworded.
-							$args = array(
-		                        'post_type'        => 'document',
-		                        'p'                => $document->ID,
-		                        'suppress_filters' => false
-		                    );
-
-							// Setup everything that we need to load the default
-							// template.
-							$GLOBALS['post']         = $document;
-							$GLOBALS['post_id']      = $document->ID;
-							$GLOBALS['the_post']     = $document;
-		                    $GLOBALS['wp_query']     = $wp_query = new \WP_Query( $args );
-		                    $GLOBALS['wp_the_query'] = $GLOBALS['wp_query'];
+							return;
 						}
 
 						// Check if this is a private document, and if we are the
@@ -120,14 +111,18 @@ class Load_Binder_Document {
 							$load_document = false;
 						}
 
+						// Meta cap check.
+						if ( $load_document && ! current_user_can( 'read_post', $document->ID ) ) {
+							$load_document = false;
+						}
+
 						// Add filters to do extra permission checks.
 						$load_document = apply_filters( MKDO_BINDER_PREFIX . '_load_document', $load_document, $document );
 
 						// We can load the document, lets load it.
 						if ( $load_document ) {
 
-							$binder = new Binder();
-							$latest_document = $binder->get_latest_document_by_post_id( $document->ID );
+							$latest_document = Binder::get_latest_document_by_post_id( $document->ID );
 							$file_name       = $latest_document->file;
 							$folder          = $latest_document->folder;
 							$type            = $latest_document->type;
@@ -137,15 +132,26 @@ class Load_Binder_Document {
 
 							// If the version is set, return that.
 							if ( isset( $_GET['v'] ) ) {
-								$version_document = $binder->get_document_by_version( $document->ID, esc_attr( $_GET['v'] ) );
+								$version_document = Binder::get_document_by_version( $document->ID, esc_attr( $_GET['v'] ) );
 								$file_name        = $version_document->file;
 								$folder           = $version_document->folder;
 								$type             = $version_document->type;
 								$mime_type        = $version_document->mime_type;
 							}
 
-							// TODO:
-							// If $slug does not have a suffix, we will need to add one here.
+							// If the file is a URL redirect to that.
+							if ( false !== filter_var( $file_name, FILTER_VALIDATE_URL ) ) {
+								status_header( 200 );
+								header( 'Location:' . esc_url( $file_name ) );
+								exit;
+							}
+
+							$permalink_support = get_option( MKDO_BINDER_PREFIX . '_permalink_support', false );
+
+							if ( ! $permalink_support && false === strpos( $slug, '.' . $type ) ) {
+								$slug = $slug . '.' . $type;
+							}
+
 							if ( ! empty( $file_name ) && file_exists( $path . '/' . $file_name ) ) {
 								status_header( 200 );
 								header( 'Content-type:' . $mime_type );
@@ -153,19 +159,44 @@ class Load_Binder_Document {
 								readfile( $path . '/' . $file_name );
 								exit;
 							}
-
-							// Action before we return a 404.
-							do_action( MKDO_BINDER_PREFIX . '_before_404', $file_name, $path );
-
-							// We cannot access the document. Lets 404 instead.
-							status_header( 400 );
-							$wp_query->is_404 = true;
-							$GLOBALS['wp_query']     = $wp_query;
-		                    $GLOBALS['wp_the_query'] = $GLOBALS['wp_query'];
 						}
+
+						// Action before we return a 404.
+						do_action( MKDO_BINDER_PREFIX . '_before_404', $file_name, $path );
+
+						// We cannot access the document. Lets 404 instead.
+						status_header( 400 );
+						$wp_query->is_404 = true;
+						$GLOBALS['wp_query']     = $wp_query;
+						$GLOBALS['wp_the_query'] = $GLOBALS['wp_query'];
 					}
 				}
 			}
 		}
+	}
+
+	/**
+	 * Allow logged out users to view documetns by default
+	 *
+	 * @see https://speakerdeck.com/johnbillion/a-deep-dive-into-the-roles-and-capabilities-api
+	 *
+	 * @param  array $user_caps     The capabilities of the user.
+	 * @param  array $required_caps The required capabilities.
+	 * @param  array $args          The requrested capabilities.
+	 * @return array                The modified user capabilities.
+	 */
+	public function user_has_cap( $user_caps, $required_caps, $args ) {
+
+		if ( 'read_post' === $args[0] ) {
+
+			// Get the post.
+			$document = get_post( $args[2] );
+
+			// Allow logout users to view documents by default.
+			if ( current_user_can( 'exist' ) && ! is_user_logged_in() && 'binder' === $document->post_type ) {
+				$user_caps[ $required_caps[0] ] = true;
+			}
+		}
+		return $user_caps;
 	}
 }

@@ -7,7 +7,7 @@ module.exports = {
 	options: {
 		processors: [
 			require( 'autoprefixer' )( {
-				browsers: [ '> 5%', 'last 2 versions' ]
+				browsers: [ '> 5%', 'last 2 versions', 'IE9' ]
 			} ),
 			require( 'pixrem' )()
 		]

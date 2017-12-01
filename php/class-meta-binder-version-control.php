@@ -47,127 +47,177 @@ class Meta_Binder_Version_Control {
 
 		global $post;
 
-		$binder   = new Binder();
-		$document = $binder->get_latest_document_by_post_id( $post->ID );
-		$history  = $binder->get_history_by_post_id( $post->ID );
+		$document = Binder::get_latest_document_by_post_id( $post->ID );
+		$history  = Binder::get_history_by_post_id( $post->ID );
 		$base     = apply_filters( MKDO_BINDER_PREFIX . '_document_base', WP_CONTENT_DIR . '/uploads/binder/' );
 		?>
 		<div class="meta-box">
 			<table class="binder-history">
-				<tr>
-					<th class="binder-history__column binder-history__column--preview"><?php esc_html_e( 'Preview', 'binder' );?></th>
-					<th class="binder-history__column binder-history__column--status"><?php esc_html_e( 'Status', 'binder' );?></th>
-					<th class="binder-history__column binder-history__column--version"><?php esc_html_e( 'Version', 'binder' );?></th>
-					<th class="binder-history__column binder-history__column--comment"><?php esc_html_e( 'Comment', 'binder' );?></th>
-					<th class="binder-history__column binder-history__column--file"><?php esc_html_e( 'File', 'binder' );?></th>
-				</tr>
-			<?php
+				<thead>
+					<tr>
+						<th class="binder-history__column binder-history__column--version"><?php esc_html_e( 'Version', 'binder' );?></th>
+						<th class="binder-history__column binder-history__column--type"><?php esc_html_e( 'Type', 'binder' );?></th>
+						<th class="binder-history__column binder-history__column--size"><?php esc_html_e( 'Size', 'binder' );?></th>
+						<th class="binder-history__column binder-history__column--date"><?php esc_html_e( 'Date', 'binder' );?></th>
+						<th class="binder-history__column binder-history__column--author"><?php esc_html_e( 'Author', 'binder' );?></th>
+						<th class="binder-history__column binder-history__column--comment"><?php esc_html_e( 'Comment', 'binder' );?></th>
+						<th class="binder-history__column binder-history__column--latest"><?php esc_html_e( 'Latest', 'binder' );?></th>
+						<th class="binder-history__column binder-history__column--delete"><?php esc_html_e( 'Delete', 'binder' );?></th>
+						<th class="binder-history__column binder-history__column--downoad">
+							<i class="fa fa-download">
+								<span class="u-hidden-visually | sr-only">
+									<?php esc_html_e( 'Download', 'binder' ); ?>
+								</span>
+							</i>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php
+				foreach ( $history as $version ) {
+					$link     = get_the_permalink( $version->post_id );
+					$author   = get_userdata( $version->user_id );
+					$type     = '';
+					$icon     = '';
+					$term     = wp_get_object_terms( $version->post_id, 'binder_type' );
 
-			foreach ( $history as $version ) {
-				$author = get_userdata( $version->user_id );
-				if ( 'comment' !== $version->type ) {
-					$current_version = esc_attr( $version->version );
+					if ( ! empty( $term ) ) {
+						$term = $term[0];
+						$type = $term->name;
+						$icon = get_term_meta( $term->term_id, MKDO_BINDER_PREFIX . '_type_icon', true );
+					}
+
+					// Term fallback.
+					if ( empty( $term ) ) {
+						$type = $document->type;
+						$term = get_term_by( 'slug', $type, 'binder_type' );
+						if ( ! empty( $term ) ) {
+							$term = $term;
+							$type = $term->name;
+							$icon = get_term_meta( $term->term_id, MKDO_BINDER_PREFIX . '_type_icon', true );
+						}
+					}
+					if ( 'comment' !== $version->type ) {
+						$current_version = esc_attr( $version->version );
+					}
+					?>
+					<tr>
+						<td
+							class="binder-history__column binder-history__column--version"
+							data-th="<?php esc_html_e( 'Version', 'binder' );?>"
+						>
+						<?php echo esc_html( $version->version );?>
+						</td>
+						<td
+							class="binder-history__column binder-history__column--type"
+							data-th="<?php esc_html_e( 'Type', 'binder' );?>"
+						>
+						<?php
+						if ( 'comment' !== $version->type && false === filter_var( $version->file, FILTER_VALIDATE_URL ) ) {
+							echo '<i class="fa fa-' . esc_attr( $icon ) . '"></i> ';
+							echo esc_html( $type );
+						} elseif ( 'comment' === $version->type ) {
+							echo '<i class="fa fa-comment-o"></i> ';
+							esc_html_e( 'Comment', 'binder' );
+						} else {
+
+							echo '<i class="fa fa-' . esc_attr( $icon ) . '"></i> ';
+							echo esc_html( $type );
+							echo ' (';
+							echo '<i class="fa fa-link"></i> ';
+							echo esc_html_e( 'Link', 'binder' );
+							echo ')';
+						}
+						?>
+						</td>
+						<td
+							class="binder-history__column binder-history__column--size"
+							data-th="<?php esc_html_e( 'Size', 'binder' );?>"
+						>
+							<?php echo esc_html( $version->size );?>
+						</td>
+						<td
+							class="binder-history__column binder-history__column--date"
+							data-th="<?php esc_html_e( 'Date', 'binder' );?>"
+						>
+							<?php echo esc_html( $version->upload_date );?>
+						</td>
+						<td
+							class="binder-history__column binder-history__column--author"
+							data-th="<?php esc_html_e( 'Author', 'binder' );?>"
+						>
+							<?php echo esc_html( $author->user_nicename );?>
+						</td>
+						<td
+							class="binder-history__column binder-history__column--comment"
+							data-th="<?php esc_html_e( 'Comment', 'binder' );?>"
+						>
+							<?php echo esc_html( $version->description );?>
+							<?php
+							$thumbs = unserialize( $version->thumb );
+							if ( ! empty( $thumbs ) ) {
+								$uploads    = wp_upload_dir();
+								$image_path = $version->get_thumbnail( $version->binder_id, $size = 'thumbnail' );
+								?>
+								<img src="<?php echo esc_attr( $image_path );?>" alt="File Preview"/>
+								<?php
+							}
+							?>
+						</td>
+						<td
+							class="binder-history__column binder-history__column--latest"
+							data-th="<?php esc_html_e( 'Latest', 'binder' );?>"
+						>
+							<?php
+							if ( 'comment' !== $version->type ) {
+								?>
+								<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_file">
+									<input
+										type="radio"
+										id="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_file"
+										name="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_file[]"
+										value="<?php echo esc_attr( $version->binder_id );?>"
+										<?php checked( $version->status, 'latest', true );?>
+									/>
+									<span class="u-hidden-visually | sr-only">
+										<?php esc_html_e( 'Set to Latest', 'binder' );?>
+									</span>
+								</label>
+								<?php
+							}
+							?>
+						</td>
+						<td
+							class="binder-history__column binder-history__column--remove"
+							data-th="<?php esc_html_e( 'Remove', 'binder' );?>"
+						>
+							<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_remove">
+								<input
+									id="<?php echo esc_attr( MKDO_BINDER_PREFIX);?>_remove"
+									name="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_remove[]"
+									value="<?php echo esc_attr( $version->binder_id );?>"
+									type="checkbox"
+								/>
+								<span class="u-hidden-visually | sr-only"><?php esc_html_e( 'Remove', 'binder' );?></span>
+							</label>
+						</td>
+						<td
+							class="binder-history__column binder-history__column--remove"
+							data-th="<?php esc_html_e( 'Download', 'binder' );?>"
+						>
+						<?php
+						if ( 'comment' !== $version->type ) {
+							?>
+							<a href="<?php echo esc_url( $link );?>?v=<?php echo esc_attr( $version->version );?>" target="_blank"><?php esc_html_e( 'Download', 'binder' );?></a>
+							<?php
+						}
+						?>
+						</td>
+					</tr>
+					<?php
 				}
 				?>
-				<tr>
-					<td class="binder-history__column binder-history__column--preview" data-th="<?php esc_html_e( 'Preview', 'binder' );?>">
-						<?php
-						if ( ! empty( $version->thumb ) ) {
-							$uploads    = wp_upload_dir();
-							$thumb      = str_replace( $base, '', $version->thumb );
-							$image_path = $version->get_thumbnail( $version->binder_id, $size = 'thumbnail' );
-							?>
-							<img src="<?php echo esc_attr( $image_path );?>" alt="File Preview"/>
-							<?php
-						} else {
-							echo '-';
-						}
-						?>
-					</td>
-					<td class="binder-history__column binder-history__column--status" data-th="<?php esc_html_e( 'Status', 'binder' );?>">
-						<?php
-						if ( 'comment' !== $version->type ) {
-							?>
-							<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_file">
-								<input
-									type="radio"
-									id="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_file"
-									name="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_file[]"
-									value="<?php echo esc_attr( $version->binder_id );?>"
-									<?php checked( $version->status, 'latest', true );?>
-								/>
-								<?php esc_html_e( 'Latest', 'binder' );?>
-							</label>
-							<?php
-						} else {
-							esc_html_e( 'Comment', 'binder' );
-						}
-						?>
-					</td>
-					<td class="binder-history__column binder-history__column--version" data-th="<?php esc_html_e( 'Version', 'binder' );?>">
-						<label
-							class="hidden"
-							for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_version"
-						>
-							<?php esc_html_e( 'Version', 'binder' );?>
-						</label>
-						<?php echo esc_html( $version->version );?>
-					</td>
-					<td class="binder-history__column binder-history__column--comment" data-th="Comment">
-						<label
-							class="hidden"
-							for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_description"
-						>
-							<?php esc_html_e( 'Comment', 'binder' );?>
-						</label>
-						<?php
-						echo esc_html( $version->description );
-						if ( ! empty( $version->description ) ) {
-							echo '<br/><br/>';
-						}
-						if ( 'comment' !== $version->type ) {
-							?>
-							<strong>
-								<?php esc_html_e( 'File:', 'binder' );?>
-							</strong>
-							<?php echo esc_html( $version->name );?>
-							<br/>
-							<strong>
-								<?php esc_html_e( 'Uploaded:', 'binder' );?>
-							</strong>
-							<?php echo esc_html( $version->upload_date );?>
-							<br/>
-							<?php
-						} else {
-							?>
-							<strong>
-								<?php esc_html_e( 'Date:', 'binder' );?>
-							</strong>
-							<?php echo esc_html( $version->upload_date );?>
-							<br/>
-							<?php
-						}
-						?>
-						<strong>
-							<?php esc_html_e( 'By:', 'binder' );?>
-						</strong>
-						<?php echo esc_html( $author->user_nicename );?>
-					</td>
-					<td class="binder-history__column binder-history__column--file" data-th="<?php esc_html_e( 'Remove', 'binder' );?>">
-						<label for="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_remove">
-							<input
-								id="<?php echo esc_attr( MKDO_BINDER_PREFIX);?>_remove"
-								name="<?php echo esc_attr( MKDO_BINDER_PREFIX );?>_remove[]"
-								value="<?php echo esc_attr( $version->binder_id );?>"
-								type="checkbox"
-							/>
-							<?php esc_html_e( 'Remove', 'binder' );?>
-						</label>
-					</td>
-				</tr>
-				<?php
-			}
-			?>
+				</tbody>
 			</table>
 		</div>
 		<?php
@@ -205,11 +255,11 @@ class Meta_Binder_Version_Control {
 
 		// Remove selected files.
 		if ( isset( $_POST[ MKDO_BINDER_PREFIX . '_remove' ] ) ) {
-			$binder    = new Binder();
+
 			$documents = $_POST[ MKDO_BINDER_PREFIX . '_remove' ];
 			if ( is_array( $documents ) ) {
 				foreach ( $documents as $binder_id ) {
-					$binder->delete_document_history_item( $binder_id );
+					Binder::delete_document_history_item( $binder_id );
 				}
 			}
 		}
@@ -221,13 +271,12 @@ class Meta_Binder_Version_Control {
 				$latest_file = $latest_file[0];
 			}
 			if ( ! empty( $latest_file ) ) {
-				$binder = new Binder();
 
 				// Update the history.
-				$binder->update_document_history_item_to_latest( $latest_file );
+				Binder::update_document_history_item_to_latest( $latest_file );
 
 				// Get the document.
-				$document = $binder->get_document( $latest_file );
+				$document = Binder::get_document( $latest_file );
 				$base     = apply_filters( MKDO_BINDER_PREFIX . '_document_base', WP_CONTENT_DIR . '/uploads/binder/' );
 				$path     = $base . $document->folder;
 

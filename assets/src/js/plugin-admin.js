@@ -104,4 +104,15 @@
 	$( '.select2-search--inline' ).hide();
 	$( '.select2-selection__rendered' ).css( 'padding-bottom', '5px' );
 
+	/**
+	 * Binder Tablesorter
+	 */
+	$( '.binder-history' ).tablesorter({
+        headers: {
+            6: { sorter: false },
+            7: { sorter: false },
+			8: { sorter: false },
+        }
+    });
+
 } )( jQuery );

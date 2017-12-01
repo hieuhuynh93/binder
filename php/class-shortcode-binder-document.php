@@ -71,8 +71,8 @@ class Shortcode_Binder_Document {
 		}
 
 		if ( is_array( $documents ) && ! empty( $documents ) ) {
-			$binder  = new Binder();
-			$history = $binder->get_history_by_post_id( $documents[0]->ID );
+
+			$history = Binder::get_history_by_post_id( $documents[0]->ID );
 			if ( ! is_array( $history ) ) {
 				$history = array();
 			}
@@ -166,24 +166,6 @@ class Shortcode_Binder_Document {
 					'true',
 				),
 			),
-			// array(
-			// 	'label'        => esc_html__( 'Show Image (card only)', 'binder' ),
-			// 	'description'  => esc_html__( 'Show the image when presenting the document list as a card list or grid.', 'binder' ),
-			// 	'attr'         => 'image',
-			// 	'type'         => 'checkbox',
-			// 	'options'      => array(
-			// 		'true',
-			// 	),
-			// ),
-			// array(
-			// 	'label'        => esc_html__( 'Show Document Reader', 'binder' ),
-			// 	'description'  => esc_html__( 'If this is displayed as a link it will add the reader text and link inline, otherwise it will display under the card.', 'binder' ),
-			// 	'attr'         => 'document_reader',
-			// 	'type'         => 'checkbox',
-			// 	'options'      => array(
-			// 		'true',
-			// 	),
-			// ),
 		);
 
 		// Display Types filter.
@@ -276,7 +258,7 @@ class Shortcode_Binder_Document {
 		}
 
 		// Render additional view types.
-		do_action( MKDO_BINDER_PREFIX . '_shortcode_binder_document_render_views' );
+		do_action( MKDO_BINDER_PREFIX . '_shortcode_binder_document_render_views', $attr, $document_post );
 
 		return ob_get_clean();
 	}
@@ -288,8 +270,8 @@ class Shortcode_Binder_Document {
 		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 			$document_id = $_POST['document_id'];
 			$document    = get_post( $document_id );
-			$binder      = new Binder();
-			$history     = $binder->get_history_by_post_id( $document_id );
+
+			$history     = Binder::get_history_by_post_id( $document_id );
 			if ( ! is_array( $history ) ) {
 				$history = array();
 			}

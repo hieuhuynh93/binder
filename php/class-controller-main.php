@@ -69,6 +69,15 @@ class Controller_Main {
 	private $meta_binder_document_type;
 
 	/**
+	 * Make the excerpt into the summary.
+	 *
+	 * @var 	object
+	 * @access	private
+	 * @since	0.1.0
+	 */
+	private $meta_binder_excerpt;
+
+	/**
 	 * The Binder Document Version Control Meta.
 	 *
 	 * @var 	object
@@ -143,6 +152,7 @@ class Controller_Main {
 	 * @param Load_Binder_Document           $load_binder_document           Load Binder Document.
 	 * @param Meta_Binder_Add_Entry          $meta_binder_add_entry          The Binder Document Add Entry Meta.
 	 * @param Meta_Binder_Document_Type      $meta_binder_document_type      The Binder Document Type Meta.
+	 * @param Meta_Binder_Excerpt            $meta_binder_excerpt            Make the excerpt into the summary.
 	 * @param Meta_Binder_Version_Control    $meta_binder_version_control    The Binder Version Control Meta.
 	 * @param Notices_Admin                  $notices_admin                  Notices on the admin screens.
 	 * @param Post_Binder                    $post_binder                    The Binder Document Post Type.
@@ -161,6 +171,7 @@ class Controller_Main {
 		Load_Binder_Document $load_binder_document,
 		Meta_Binder_Add_Entry $meta_binder_add_entry,
 		Meta_Binder_Document_Type $meta_binder_document_type,
+		Meta_Binder_Excerpt $meta_binder_excerpt,
 		Meta_Binder_Version_Control $meta_binder_version_control,
 		Notices_Admin $notices_admin,
 		Post_Binder $post_binder,
@@ -176,6 +187,7 @@ class Controller_Main {
 		$this->load_binder_document           = $load_binder_document;
 		$this->meta_binder_add_entry          = $meta_binder_add_entry;
 		$this->meta_binder_document_type      = $meta_binder_document_type;
+		$this->meta_binder_excerpt            = $meta_binder_excerpt;
 		$this->meta_binder_version_control    = $meta_binder_version_control;
 		$this->notices_admin                  = $notices_admin;
 		$this->post_binder                    = $post_binder;
@@ -199,11 +211,12 @@ class Controller_Main {
 		);
 
 		$this->activator->run();
-		$this->settings->run();
+		// $this->settings->run();
 		$this->controller_assets->run();
 		$this->load_binder_document->run();
 		$this->meta_binder_add_entry->run();
 		$this->meta_binder_document_type->run();
+		$this->meta_binder_excerpt->run();
 		$this->meta_binder_version_control->run();
 		$this->notices_admin->run();
 		$this->post_binder->run();

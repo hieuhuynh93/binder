@@ -41,7 +41,7 @@ class Activator {
 
 		global $wpdb;
 
-		$table_name      = $wpdb->prefix . 'binder_history';
+		$table_name      = MKDO_BINDER_HISTORY_TABLE;
 		$charset_collate = $wpdb->get_charset_collate();
 
 		$sql = "CREATE TABLE $table_name (
@@ -53,7 +53,7 @@ class Activator {
 			status      VARCHAR(20)  DEFAULT '' NOT NULL,
 			version     VARCHAR(20)  DEFAULT '',
 			name        VARCHAR(200) DEFAULT '',
-			description VARCHAR(255) DEFAULT '',
+			description LONGTEXT     DEFAULT '',
 			folder      VARCHAR(200) DEFAULT '',
 			file        VARCHAR(200) DEFAULT '',
 			size        VARCHAR(20)  DEFAULT '',
